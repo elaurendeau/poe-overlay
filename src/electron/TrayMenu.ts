@@ -1,0 +1,1 @@
+import { Tray } from "electron";
