@@ -1,18 +1,11 @@
 <template>
   <v-app style="background-color: transparent">
-    <Overlay />
+    <router-view></router-view>
   </v-app>
 </template>
 
 <script>
-import Overlay from "@/components/Overlay";
-
 export default {
   name: "App",
-  // eslint-disable-next-line vue/no-unused-components
-  components: { Overlay },
-  data: () => ({
-    //
-  }),
 };
 </script>

@@ -38,17 +38,6 @@ async function createWindow() {
 
   overlayWindow.setIgnoreMouseEvents(true);
 
-  if (process.env.WEBPACK_DEV_SERVER_URL) {
-    // Load the url of the dev server if in development mode
-    await overlayWindow.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string);
-    // if (!process.env.IS_TEST) overlayWindow.webContents.openDevTools();
-  } else {
-    createProtocol("app");
-    // Load the index.html when not in development
-    overlayWindow.loadURL("app://./index.html");
-  }
-  electronComponents.windowMap.set(overlayWindowKey, overlayWindow);
-
   const settingsWindow = new BrowserWindow({
     height: 800,
     width: 600,
@@ -67,8 +56,23 @@ async function createWindow() {
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
     },
   });
-  settingsWindow.webContents.openDevTools();
+  // settingsWindow.webContents.openDevTools();
 
+  if (process.env.WEBPACK_DEV_SERVER_URL) {
+    // Load the url of the  dev server if in development mode
+    await overlayWindow.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string);
+    await settingsWindow.loadURL(
+      (process.env.WEBPACK_DEV_SERVER_URL as string) + "settings"
+    );
+    // if (!process.env.IS_TEST) overlayWindow.webContents.openDevTools();
+  } else {
+    createProtocol("app");
+    // Load the index.html when not in development
+    overlayWindow.loadURL("app://./index.html");
+    settingsWindow.loadURL("app://./index.html/settings");
+  }
+
+  electronComponents.windowMap.set(overlayWindowKey, overlayWindow);
   electronComponents.windowMap.set(settingsWindowKey, settingsWindow);
 }
 
@@ -106,7 +110,7 @@ app.on("ready", async () => {
     {
       label: "Settings",
       click: () => {
-        electronComponents.windowMap.get(overlayWindowKey).show();
+        electronComponents.windowMap.get(settingsWindowKey).show();
       },
     },
     {
