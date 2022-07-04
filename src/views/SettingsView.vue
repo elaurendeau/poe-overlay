@@ -1,10 +1,24 @@
+<script lang="ts">
+import Vue from "vue";
+import { ipcRenderer } from "electron";
+
+export default Vue.extend({
+  name: "SettingsView",
+  methods: {
+    hide() {
+      ipcRenderer.send("hide-settings");
+    },
+  },
+});
+</script>
+
 <template>
   <div id="settings-frame">
     <div id="settings-header">
       <div></div>
       <div id="settings-title">Settings</div>
       <div id="close-section">
-        <div id="close-button">&#10006;</div>
+        <div id="close-button" v-on:click="hide">&#10006;</div>
       </div>
     </div>
 
@@ -12,14 +26,7 @@
   </div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-
-export default Vue.extend({
-  name: "SettingsView",
-});
-</script>
-<script lang="sass">
+<style lang="sass">
 body, html
   margin: 0
   padding: 0
@@ -78,4 +85,4 @@ body
 
 #close-button:hover
   color: #EC625F
-</script>
+</style>

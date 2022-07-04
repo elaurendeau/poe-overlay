@@ -1,4 +1,13 @@
-import { app, protocol, BrowserWindow, Tray, Menu, screen } from "electron";
+import {
+  app,
+  protocol,
+  BrowserWindow,
+  Tray,
+  Menu,
+  screen,
+  ipcMain,
+  IpcRenderer,
+} from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 
 const overlayWindowKey = "MAIN_WINDOW";
@@ -56,7 +65,7 @@ async function createWindow() {
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
     },
   });
-  // settingsWindow.webContents.openDevTools();
+  settingsWindow.webContents.openDevTools();
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the  dev server if in development mode
@@ -84,6 +93,7 @@ app.on("window-all-closed", () => {
     app.quit();
   }
 });
+
 app.on("activate", () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
@@ -121,6 +131,9 @@ app.on("ready", async () => {
     },
   ]);
   electronComponents.tray.setContextMenu(contextMenu);
+});
+ipcMain.on("hide-settings", async (event, args) => {
+  electronComponents.windowMap.get(settingsWindowKey).hide();
 });
 
 // Exit cleanly on request from parent process in development mode.
