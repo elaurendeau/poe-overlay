@@ -5,8 +5,8 @@ import { electronComponents, SETTINGS_WINDOW_KEY } from "@/electron-components";
 
 export function createSettingsWindow(): BrowserWindow {
   const settingsWindow = new BrowserWindow({
-    height: 800,
-    width: 600,
+    height: 600,
+    width: 800,
     maxHeight: 2000,
     maxWidth: 1600,
     frame: false,

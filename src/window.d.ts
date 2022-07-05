@@ -1,7 +1,7 @@
-declare global {
-  interface Window {
-    api: {
-      send: (channel: string, ...arg: any) => void;
-    };
-  }
-}
+// declare global {
+//   interface Window {
+//     api: {
+//       send: (channel: string, ...arg: any) => void;
+//     };
+//   }
+// }

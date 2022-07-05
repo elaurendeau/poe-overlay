@@ -20,5 +20,8 @@ npm run build
 npm run lint
 ```
 
+### Icon list
+https://pictogrammers.github.io/@mdi/font/2.0.46/
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).

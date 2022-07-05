@@ -1,89 +1,90 @@
 <script lang="ts">
 import Vue from "vue";
-import { ipcRenderer } from "electron";
-
 export default Vue.extend({
   name: "SettingsView",
+  data() {
+    return {
+      drawer: true,
+      mini: true,
+    };
+  },
   methods: {
     hide() {
+      console.log("hide");
       window.api.send("hide-settings");
-      // ipcRenderer.send("hide-settings");
+    },
+    gridToggle() {
+      window.api.send("toggle-grid");
     },
   },
 });
 </script>
 
 <template>
-  <div id="settings-frame">
-    <div id="settings-header">
-      <div></div>
-      <div id="settings-title">Settings</div>
-      <div id="close-section">
-        <div id="close-button" v-on:click="hide">&#10006;</div>
-      </div>
-    </div>
+  <v-app id="inspire">
+    <v-card height="600" class="d-flex flex-row justify-end">
+      <v-system-bar
+        class="d-flex flex-row justify-end mb-6"
+        style="-webkit-app-region: drag; width: 85%"
+      >
+        <div @click="hide" style="-webkit-app-region: no-drag">
+          <v-icon>mdi-close-circle-outline</v-icon>
+        </div>
+      </v-system-bar>
+      <v-navigation-drawer permanent right>
+        <template v-slot:prepend>
+          <v-list-item two-line>
+            <v-list-item-avatar>
+              <v-icon left large>mdi-cog</v-icon>
+            </v-list-item-avatar>
 
-    <div id="settings-content"></div>
-  </div>
+            <v-list-item-content>
+              <v-list-item-title title>Settings</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </template>
+
+        <v-divider></v-divider>
+
+        <div style="height: 100%" class="d-flex flex-column">
+          <v-list dense>
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon>mdi-buffer</v-icon>
+              </v-list-item-icon>
+
+              <v-list-item-content>
+                <v-list-item-title>Manage Overlays</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item @click="gridToggle">
+              <v-list-item-icon>
+                <v-icon>mdi-border-none</v-icon>
+              </v-list-item-icon>
+
+              <v-list-item-content>
+                <v-list-item-title>Show Grid</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+          <v-list class="mt-auto" dense>
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon>mdi-content-save</v-icon>
+              </v-list-item-icon>
+
+              <v-list-item-content>
+                <v-list-item-title>Save</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </div>
+      </v-navigation-drawer>
+    </v-card>
+  </v-app>
 </template>
 
 <style lang="sass">
-body, html
-  margin: 0
-  padding: 0
-
-*
-  box-sizing: border-box
-  font-family: "Segoe UI"
-  color: white
-
-body
-  background-color: transparent
-
-#settings-frame
-  height: 100vh
-  width: 100vw
-  background-color: #041C32
-  border: 0.5px solid #064663
-  border-radius: 20px
-
-#settings-header
-  /*calc(x, y) x-> parent border radius, y -> parent border size*/
-  border-radius: calc(20px - 0.5px)
-  border-bottom-right-radius: 0
-  border-bottom-left-radius: 0
-  border-bottom: 0.5px solid #064663
-  height: 5%
-  background-color: #04293A
-  -webkit-app-region: drag
-  display: grid
-  grid-template-columns: 1fr 1fr 1fr
-  grid-gap: 1rem
-  align-items: center
-
-  *
-    height: 100%
-
-#settings-title
+v-list-item-title
   -webkit-user-select: none
-  display: flex
-  align-items: center
-  justify-content: center
-  font-weight: bold
-  font-size: 16px
-
-#close-section
-  padding: 5px
-  margin-right: 20px
-  font-size: 1.2em
-  -webkit-user-select: none
-  display: flex
-  align-items: center
-  justify-content: flex-end
-
-#close-button
-  -webkit-app-region: no-drag
-
-#close-button:hover
-  color: #EC625F
 </style>

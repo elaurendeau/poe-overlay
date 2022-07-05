@@ -1,9 +1,22 @@
 import { app, protocol, BrowserWindow, ipcMain } from "electron";
 import { createOverlayWindow } from "@/window/overlay-window";
-import { electronComponents, SETTINGS_WINDOW_KEY } from "@/electron-components";
+import {
+  electronComponents,
+  GRID_WINDOW_KEY,
+  SETTINGS_WINDOW_KEY,
+} from "@/electron-components";
 import { createTray } from "@/tray/main-tray";
+import { createGridWindow } from "@/window/grid-window";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
+
+declare global {
+  interface Window {
+    api: {
+      send: (channel: string, ...arg: any) => void;
+    };
+  }
+}
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -42,6 +55,20 @@ app.on("ready", async () => {
 });
 ipcMain.on("hide-settings", async (event, args) => {
   electronComponents.windows[SETTINGS_WINDOW_KEY].hide();
+});
+
+ipcMain.on("toggle-grid", async (event, args) => {
+  let gridWindow = electronComponents.windows[GRID_WINDOW_KEY];
+
+  if (!gridWindow) {
+    gridWindow = createGridWindow();
+  }
+
+  if (gridWindow.isVisible()) {
+    gridWindow.hide();
+  } else {
+    gridWindow.show();
+  }
 });
 
 // Exit cleanly on request from parent process in development mode.

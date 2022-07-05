@@ -5,7 +5,7 @@ import { contextBridge, ipcRenderer } from "electron";
 contextBridge.exposeInMainWorld("api", {
   send: (channel, data) => {
     // whitelist channels
-    const validChannels = ["hide-settings"];
+    const validChannels = ["hide-settings", "toggle-grid"];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
     }
