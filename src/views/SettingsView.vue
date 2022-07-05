@@ -6,7 +6,8 @@ export default Vue.extend({
   name: "SettingsView",
   methods: {
     hide() {
-      ipcRenderer.send("hide-settings");
+      window.api.send("hide-settings");
+      // ipcRenderer.send("hide-settings");
     },
   },
 });

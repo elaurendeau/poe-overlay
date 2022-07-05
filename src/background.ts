@@ -9,6 +9,15 @@ import {
   IpcRenderer,
 } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
+import * as path from "path";
+
+declare global {
+  interface Window {
+    api: {
+      send: (channel: string, ...arg: any) => void;
+    };
+  }
+}
 
 const overlayWindowKey = "MAIN_WINDOW";
 const settingsWindowKey = "SETTING_WINDOW";
@@ -42,6 +51,7 @@ async function createWindow() {
       nodeIntegration: process.env
         .ELECTRON_NODE_INTEGRATION as unknown as boolean,
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
+      preload: path.join(__dirname, "preload.js"),
     },
   });
 
@@ -63,6 +73,7 @@ async function createWindow() {
       nodeIntegration: process.env
         .ELECTRON_NODE_INTEGRATION as unknown as boolean,
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
+      preload: path.join(__dirname, "preload.js"),
     },
   });
   settingsWindow.webContents.openDevTools();
