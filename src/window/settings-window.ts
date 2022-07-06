@@ -23,7 +23,9 @@ export function createSettingsWindow(): BrowserWindow {
       preload: path.join(__dirname, "preload.js"),
     },
   });
-  settingsWindow.webContents.openDevTools();
+  settingsWindow.webContents.openDevTools({
+    mode: "detach",
+  });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the  dev server if in development mode

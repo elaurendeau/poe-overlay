@@ -7,6 +7,7 @@ import {
 } from "@/electron-components";
 import { createTray } from "@/tray/main-tray";
 import { createGridWindow } from "@/window/grid-window";
+import { SettingsModel } from "@/model/settings-model";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -53,9 +54,6 @@ app.on("ready", async () => {
   createOverlayWindow();
   createTray();
 });
-ipcMain.on("hide-settings", async (event, args) => {
-  electronComponents.windows[SETTINGS_WINDOW_KEY].hide();
-});
 
 ipcMain.on("toggle-grid", async (event, args) => {
   let gridWindow = electronComponents.windows[GRID_WINDOW_KEY];
@@ -71,6 +69,15 @@ ipcMain.on("toggle-grid", async (event, args) => {
     console.log("is not Visible, showing!");
     gridWindow.show();
   }
+});
+
+ipcMain.on("hide-settings", async (event, args) => {
+  console.log("IpcMain.receive -> hide-settings");
+  electronComponents.windows[SETTINGS_WINDOW_KEY].hide();
+});
+
+ipcMain.on("save-settings", async (event, settings: SettingsModel) => {
+  console.log("IpcMain.receive -> save-settings");
 });
 
 // Exit cleanly on request from parent process in development mode.
