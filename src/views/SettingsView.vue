@@ -1,5 +1,6 @@
 <script lang="ts">
 import Vue from "vue";
+import SettingsGridComponent from "@/component/SettingsGridComponent.vue";
 export default Vue.extend({
   name: "SettingsView",
   data() {
@@ -8,6 +9,9 @@ export default Vue.extend({
       drawer: true,
       mini: true,
     };
+  },
+  components: {
+    SettingsGridComponent,
   },
   methods: {
     hide() {
