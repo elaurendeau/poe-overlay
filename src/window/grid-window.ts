@@ -25,7 +25,9 @@ export function createGridWindow(): BrowserWindow {
       preload: path.join(__dirname, "preload.js"),
     },
   });
-  gridWindow.webContents.openDevTools();
+  // gridWindow.webContents.openDevTools();
+
+  gridWindow.setIgnoreMouseEvents(true);
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the  dev server if in development mode

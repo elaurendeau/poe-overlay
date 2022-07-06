@@ -65,8 +65,10 @@ ipcMain.on("toggle-grid", async (event, args) => {
   }
 
   if (gridWindow.isVisible()) {
+    console.log("isVisible, hiding!");
     gridWindow.hide();
   } else {
+    console.log("is not Visible, showing!");
     gridWindow.show();
   }
 });
