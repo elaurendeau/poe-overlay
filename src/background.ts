@@ -9,6 +9,8 @@ import { createTray } from "@/tray/main-tray";
 import { createGridWindow } from "@/window/grid-window";
 import { SettingsModel } from "@/model/settings-model";
 
+import { logger } from "./logger/logger";
+
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 declare global {
@@ -63,21 +65,21 @@ ipcMain.on("toggle-grid", async (event, args) => {
   }
 
   if (gridWindow.isVisible()) {
-    console.log("isVisible, hiding!");
+    logger.debug("isVisible, hiding!");
     gridWindow.hide();
   } else {
-    console.log("is not Visible, showing!");
+    logger.debug("is not Visible, showing!");
     gridWindow.show();
   }
 });
 
 ipcMain.on("hide-settings", async (event, args) => {
-  console.log("IpcMain.receive -> hide-settings");
+  logger.info("IpcMain.receive -> hide-settings");
   electronComponents.windows[SETTINGS_WINDOW_KEY].hide();
 });
 
 ipcMain.on("save-settings", async (event, settings: SettingsModel) => {
-  console.log("IpcMain.receive -> save-settings");
+  logger.info(`IpcMain.receive -> save-settings: ${JSON.stringify(settings)}`);
 });
 
 // Exit cleanly on request from parent process in development mode.

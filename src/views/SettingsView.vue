@@ -29,7 +29,7 @@ export default Vue.extend({
     },
     save() {
       console.log("Front.ipc -> save-settings");
-      window.api.send("save-settings", this.settings.settingsGrid);
+      window.api.send("save-settings", this.settings);
     },
   },
 });
