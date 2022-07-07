@@ -1,8 +1,8 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
-import SettingsView from "@/views/SettingsView.vue";
-import OverlayView from "@/views/OverlayView.vue";
-import GridView from "@/views/GridView.vue";
+import SettingsView from "@/frontend/views/SettingsView.vue";
+import OverlayView from "@/frontend/views/OverlayView.vue";
+import GridView from "@/frontend/views/GridView.vue";
 
 Vue.use(VueRouter);
 

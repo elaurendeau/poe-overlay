@@ -4,7 +4,7 @@ module.exports = defineConfig({
   pluginOptions: {
     electronBuilder: {
       nodeIntegration: false,
-      preload: "src/preload/preload.ts",
+      preload: "src/backend/preload/preload.ts",
     },
   },
 });

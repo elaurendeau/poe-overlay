@@ -1,7 +1,10 @@
 import { BrowserWindow, screen } from "electron";
 import path from "path";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
-import { electronComponents, SETTINGS_WINDOW_KEY } from "@/electron-components";
+import {
+  electronComponents,
+  SETTINGS_WINDOW_KEY,
+} from "@/backend/electron-component/electron-components";
 
 export function createSettingsWindow(): BrowserWindow {
   const settingsWindow = new BrowserWindow({

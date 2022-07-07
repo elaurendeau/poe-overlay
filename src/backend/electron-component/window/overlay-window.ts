@@ -5,7 +5,7 @@ import {
   electronComponents,
   OVERLAY_WINDOW_KEY,
   SETTINGS_WINDOW_KEY,
-} from "@/electron-components";
+} from "@/backend/electron-component/electron-components";
 
 export function createOverlayWindow(): BrowserWindow {
   const primaryDisplay = screen.getPrimaryDisplay();

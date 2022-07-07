@@ -1,8 +1,8 @@
 <script lang="ts">
 import Vue from "vue";
-import SettingsGridComponent from "@/component/SettingsGridComponent.vue";
-import { SettingsGridModel } from "@/model/settings-grid-model";
-import { SettingsModel } from "@/model/settings-model";
+import SettingsGridComponent from "@/frontend/views/component/SettingsGridComponent.vue";
+import { SettingsGridModel } from "@/backend/model/settings-grid-model";
+import { SettingsModel } from "@/backend/model/settings-model";
 export default Vue.extend({
   name: "SettingsView",
   data() {
