@@ -54,5 +54,7 @@ In tsconfig.son
     "sourceMap": true,
 ```
 
+![registry_option.png)](registry_option.png)
+
 
 
