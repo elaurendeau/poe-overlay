@@ -19,6 +19,7 @@ export function createGridWindow(): BrowserWindow {
     frame: false,
     alwaysOnTop: true,
     show: false,
+    icon: "./public/img/icons/blind.png",
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info

@@ -1,4 +1,4 @@
-import { BrowserWindow, screen } from "electron";
+import { BrowserWindow, screen, Tray } from "electron";
 import path from "path";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import {
@@ -17,6 +17,7 @@ export function createSettingsWindow(): BrowserWindow {
     alwaysOnTop: true,
     resizable: false,
     show: false,
+    icon: "./public/img/icons/blind.png",
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info

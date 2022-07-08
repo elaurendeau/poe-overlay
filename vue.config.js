@@ -8,6 +8,7 @@ module.exports = defineConfig({
     electronBuilder: {
       nodeIntegration: false,
       preload: "src/backend/preload/preload.ts",
+      mainProcessWatch: ["src/backend/*", "src/backend/*/*"],
     },
   },
 });

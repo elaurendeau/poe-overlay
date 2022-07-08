@@ -6,7 +6,6 @@ import store from "./frontend/store";
 import vuetify from "./frontend/plugins/vuetify";
 
 Vue.config.productionTip = false;
-
 new Vue({
   router,
   store,

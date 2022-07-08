@@ -5,6 +5,8 @@ import { createTray } from "@/backend/electron-component/tray/main-tray";
 import "@/backend/ipc/settings-ipc";
 import "@/backend/ipc/grid-ipc";
 import logger from "@/backend/logger/logger";
+import { SettingsModel } from "@/backend/model/settings-model";
+import { validateGridSettings } from "@/backend/manager/grid-manager";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 

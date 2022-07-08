@@ -1,9 +1,8 @@
 import { SettingsGridModel } from "@/backend/model/settings-grid-model";
-import ipcMain = Electron.Main.ipcMain;
 
-export function updateGridBySettings(gridSettings: SettingsGridModel) {
-  ipcMain.emit("update-grid", gridSettings);
-}
+// export function updateGridBySettings(gridSettings: SettingsGridModel) {
+//   ipcMain.emit("update-grid", gridSettings);
+// }
 
 export function validateGridSettings(gridSettings: SettingsGridModel) {
   if (

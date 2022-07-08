@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start:debug": "concurrently \"vue-cli-service electron:serve --remote-debugging-port=9223\"",
+    "start:debug": "concurrently \"vue-cli-service electron:serve\"",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
