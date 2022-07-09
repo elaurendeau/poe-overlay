@@ -27,6 +27,7 @@ export function createSettingsWindow(): BrowserWindow {
       preload: path.join(__dirname, "preload.js"),
     },
   });
+
   settingsWindow.webContents.openDevTools({
     mode: "detach",
   });

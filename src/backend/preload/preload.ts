@@ -6,20 +6,20 @@ import logger from "@/backend/logger/logger";
 contextBridge.exposeInMainWorld("api", {
   send: (channel, data) => {
     // whitelist channels
-    logger.info(`IpcBridge.front -> ${channel}`);
+    logger.debug(`IpcBridge.front -> ${channel}`);
     const validChannels = ["hide-settings", "toggle-grid", "save-settings"];
-    logger.info(`IpcBridge.front -> ${channel} whitelisted`);
+    logger.debug(`IpcBridge.front -> ${channel} whitelisted`);
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
     }
   },
-  receive: (channel, func) => {
-    const validChannels = ["update-grid"];
-    logger.info(`IpcBridge.back -> ${channel}`);
+
+  receive: (channel, callback) => {
+    const validChannels = ["update-grid-settings"];
+    // logger.debug(`IpcBridge.back -> ${channel}`);
     if (validChannels.includes(channel)) {
-      logger.info(`IpcBridge.back -> ${channel} whitelisted`);
-      // Deliberately strip event as it includes `sender`
-      ipcRenderer.on(channel, (event, ...args) => func(...args));
+      logger.debug(`IpcBridge.back -> ${channel} whitelisted`);
+      ipcRenderer.on(channel, callback);
     }
   },
 });

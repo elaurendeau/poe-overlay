@@ -3,7 +3,7 @@ import path from "path";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import {
   electronComponents,
-  SETTINGS_WINDOW_KEY,
+  GRID_WINDOW_KEY,
 } from "@/backend/electron-component/electron-components";
 
 export function createGridWindow(): BrowserWindow {
@@ -29,7 +29,9 @@ export function createGridWindow(): BrowserWindow {
       preload: path.join(__dirname, "preload.js"),
     },
   });
-  // gridWindow.webContents.openDevTools();
+  gridWindow.webContents.openDevTools({
+    mode: "detach",
+  });
 
   gridWindow.setIgnoreMouseEvents(true);
 
@@ -43,6 +45,6 @@ export function createGridWindow(): BrowserWindow {
     gridWindow.loadURL("app://./index.html/grid");
   }
 
-  electronComponents.windows[SETTINGS_WINDOW_KEY] = gridWindow;
+  electronComponents.windows[GRID_WINDOW_KEY] = gridWindow;
   return gridWindow;
 }

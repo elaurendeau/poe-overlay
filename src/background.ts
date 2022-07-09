@@ -5,8 +5,7 @@ import { createTray } from "@/backend/electron-component/tray/main-tray";
 import "@/backend/ipc/settings-ipc";
 import "@/backend/ipc/grid-ipc";
 import logger from "@/backend/logger/logger";
-import { SettingsModel } from "@/backend/model/settings-model";
-import { validateGridSettings } from "@/backend/manager/grid-manager";
+import { createGridWindow } from "@/backend/electron-component/window/grid-window";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -14,6 +13,7 @@ declare global {
   interface Window {
     api: {
       send: (channel: string, ...arg: any) => void;
+      receive: (channel: string, ...arg: any) => void;
     };
   }
 }
@@ -37,6 +37,7 @@ app.on("activate", () => {
 app.on("ready", async () => {
   logger.info("Creating overlay and tray");
   createOverlayWindow();
+  createGridWindow();
   createTray();
 });
 

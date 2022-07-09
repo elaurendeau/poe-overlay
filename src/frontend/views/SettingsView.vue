@@ -3,6 +3,7 @@ import Vue from "vue";
 import SettingsGridComponent from "@/frontend/views/component/SettingsGridComponent.vue";
 import { SettingsGridModel } from "@/backend/model/settings-grid-model";
 import { SettingsModel } from "@/backend/model/settings-model";
+import logger from "@/backend/logger/logger";
 export default Vue.extend({
   name: "SettingsView",
   data() {
@@ -20,15 +21,16 @@ export default Vue.extend({
   },
   methods: {
     hide() {
-      console.log("hide");
+      console.debug("Front.ipc -> hide-settings");
       window.api.send("hide-settings");
     },
     gridToggle() {
+      console.debug("Front.ipc -> toggle-grid");
       this.showGridSettings = !this.showGridSettings;
       window.api.send("toggle-grid");
     },
     save() {
-      console.log("Front.ipc -> save-settings");
+      console.debug("Front.ipc -> save-settings");
       window.api.send("save-settings", this.settings);
     },
   },

@@ -4,7 +4,6 @@ import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import {
   electronComponents,
   OVERLAY_WINDOW_KEY,
-  SETTINGS_WINDOW_KEY,
 } from "@/backend/electron-component/electron-components";
 
 export function createOverlayWindow(): BrowserWindow {
