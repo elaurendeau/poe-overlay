@@ -29,22 +29,24 @@ export default Vue.extend({
 </script>
 
 <template>
-  <v-container id="container" fluid>
-    <div
-      v-if="displayCenterLine"
-      class="vertical-line"
-      :style="colorCenterLines"
-    ></div>
-    <div
-      v-if="displayCenterLine"
-      class="horizontal-line"
-      :style="colorCenterLines"
-    ></div>
-    <v-row :key="row" v-for="row in rowCount" no-gutters>
-      <v-col :key="col" v-for="col in columnCount">
-        <div class="box h-100" :style="colorGrid"></div>
-      </v-col>
-    </v-row>
+  <v-container id="global-container" fluid>
+    <v-container id="container" fluid>
+      <div
+        v-if="displayCenterLine"
+        class="vertical-line"
+        :style="colorCenterLines"
+      ></div>
+      <div
+        v-if="displayCenterLine"
+        class="horizontal-line"
+        :style="colorCenterLines"
+      ></div>
+      <v-row :key="row" v-for="row in rowCount" no-gutters>
+        <v-col :key="col" v-for="col in columnCount">
+          <div class="box h-100" :style="colorGrid"></div>
+        </v-col>
+      </v-row>
+    </v-container>
   </v-container>
 </template>
 
@@ -52,20 +54,25 @@ export default Vue.extend({
 *
   padding: 0
   margin: 0
-
-#container
+#global-container
   width: 100vw
   height: 100vh
+  display: flex
+  align-items: center
+  justify-content: center
+#container
+  width: 99.9vw
+  height: 99.9vh
   display: flex
   flex-direction: column
 .vertical-line
     position: absolute
-    width: 1px
+    width: 0px
     height: 100%
-    left: 50%
+    left: calc(50% - 2px)
 .horizontal-line
   position: absolute
   width: 100%
-  height: 1px
-  top: 50%
+  height: 0px
+  top: calc(50% - 2px)
 </style>
