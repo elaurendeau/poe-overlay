@@ -1,5 +1,5 @@
 <template>
-  <div style="background-color: violet; width: 100vw; height: 10px">test</div>
+  <v-container id="container" fluid> test </v-container>
 </template>
 
 <script lang="ts">
@@ -9,3 +9,14 @@ export default Vue.extend({
   name: "OverlayView",
 });
 </script>
+
+<style scoped lang="sass">
+*
+  padding: 0
+  margin: 0
+
+#container
+  width: 100vw
+  height: 10px
+  background-color: violet
+</style>

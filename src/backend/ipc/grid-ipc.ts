@@ -29,9 +29,5 @@ export function updateGridWindowSettings(gridSettings: SettingsGridModel) {
   );
 
   const gridWindow = electronComponents.windows["GRID_WINDOW"];
-  logger.debug("test before");
-  // setTimeout(() => {
-  //   logger.debug("test hello");
   gridWindow.webContents.send("update-grid-settings", gridSettings);
-  // }, 10000);
 }

@@ -32,3 +32,12 @@ export const saveSettings = ipcMain.on(
     }
   }
 );
+
+export function updateSettingsWindow(settings: SettingsModel) {
+  logger.debug(
+    `SettingsWindow.send -> update-settings: ${JSON.stringify(settings)}`
+  );
+
+  const window = electronComponents.windows["SETTING_WINDOW"];
+  window.webContents.send("update-settings", settings);
+}

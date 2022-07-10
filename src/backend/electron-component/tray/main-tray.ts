@@ -13,9 +13,6 @@ export function createTray(): Tray {
     {
       label: "Settings",
       click: () => {
-        if (!electronComponents.windows[SETTINGS_WINDOW_KEY]) {
-          createSettingsWindow();
-        }
         electronComponents.windows[SETTINGS_WINDOW_KEY].show();
       },
     },

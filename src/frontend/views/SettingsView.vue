@@ -4,6 +4,7 @@ import SettingsGridComponent from "@/frontend/views/component/SettingsGridCompon
 import { SettingsGridModel } from "@/backend/model/settings-grid-model";
 import { SettingsModel } from "@/backend/model/settings-model";
 import logger from "@/backend/logger/logger";
+
 export default Vue.extend({
   name: "SettingsView",
   data() {
@@ -11,7 +12,9 @@ export default Vue.extend({
       settings: {
         settingsGrid: {} as SettingsGridModel,
       } as SettingsModel,
-      showGridSettings: true,
+      showOverlaySettings: true,
+      showGridSettings: false,
+      showGrid: false,
       drawer: true,
       mini: true,
     };
@@ -21,25 +24,40 @@ export default Vue.extend({
   },
   methods: {
     hide() {
-      console.debug("Front.ipc -> hide-settings");
+      console.log("Front.ipc -> hide-settings");
       window.api.send("hide-settings");
     },
     gridToggle() {
-      console.debug("Front.ipc -> toggle-grid");
-      this.showGridSettings = !this.showGridSettings;
+      console.log("Front.ipc -> toggle-grid");
+      this.showGrid = !this.showGrid;
       window.api.send("toggle-grid");
     },
     save() {
-      console.debug("Front.ipc -> save-settings");
+      console.log(
+        `Front.ipc -> save-settings ${JSON.stringify(this.settings)}`
+      );
       window.api.send("save-settings", this.settings);
     },
+    showSettings(name: string) {
+      if (name === "grid") {
+        this.showGridSettings = true;
+        this.showOverlaySettings = false;
+      }
+    },
+  },
+  mounted() {
+    window.api.receive("update-settings", (event, data) => {
+      console.log(`Back.ipc -> update-settings '${JSON.stringify(data)}'`);
+
+      this.settings = data;
+      this.$forceUpdate;
+    });
   },
 });
 </script>
 
 <template>
   <v-app id="inspire">
-    <!--    <v-card height="96%">-->
     <v-system-bar
       class="d-flex flex-row justify-end w-100"
       style="-webkit-app-region: drag"
@@ -50,14 +68,14 @@ export default Vue.extend({
       </div>
     </v-system-bar>
 
-    <!--      <v-card class="h-100">-->
-
     <v-main class="h-100">
       <v-container style="color: red" fluid>
         <!-- If using vue-router -->
         <SettingsGridComponent
           :column-count.sync="settings.settingsGrid.columnCount"
           :row-count.sync="settings.settingsGrid.rowCount"
+          :display-center-lines.sync="settings.settingsGrid.displayCenterLines"
+          :grid-color.sync="settings.settingsGrid.color"
           v-if="showGridSettings"
         />
       </v-container>
@@ -91,7 +109,7 @@ export default Vue.extend({
               <v-list-item-title>Manage Overlays</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item @click="gridToggle">
+          <v-list-item @click="showSettings('grid')">
             <v-list-item-icon>
               <v-icon>mdi-border-none</v-icon>
             </v-list-item-icon>
@@ -99,6 +117,11 @@ export default Vue.extend({
             <v-list-item-content>
               <v-list-item-title>Show Grid</v-list-item-title>
             </v-list-item-content>
+
+            <v-list-item-icon @click="gridToggle">
+              <v-icon v-if="!showGrid">mdi-eye-off-outline</v-icon>
+              <v-icon v-if="showGrid">mdi-eye-outline</v-icon>
+            </v-list-item-icon>
           </v-list-item>
         </v-list>
 
@@ -115,8 +138,6 @@ export default Vue.extend({
         </v-list>
       </v-container>
     </v-navigation-drawer>
-    <!--    </v-card>-->
-    <!--    </v-card>-->
   </v-app>
 </template>
 
@@ -124,8 +145,10 @@ export default Vue.extend({
 *
   margin: 0
   padding: 0
+
 v-list-item-title
   -webkit-user-select: none
+
 #settings-content
   padding: 25px
 </style>

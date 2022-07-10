@@ -5,13 +5,15 @@ import {
   electronComponents,
   SETTINGS_WINDOW_KEY,
 } from "@/backend/electron-component/electron-components";
+import { readSettings } from "@/backend/manager/settings-manager";
+import { updateSettingsWindow } from "@/backend/ipc/settings-ipc";
 
 export function createSettingsWindow(): BrowserWindow {
   const settingsWindow = new BrowserWindow({
-    height: 600,
+    height: 900,
     width: 800,
     maxHeight: 2000,
-    maxWidth: 1600,
+    maxWidth: 800,
     frame: false,
     transparent: true,
     alwaysOnTop: true,
@@ -27,7 +29,10 @@ export function createSettingsWindow(): BrowserWindow {
       preload: path.join(__dirname, "preload.js"),
     },
   });
-
+  settingsWindow.on("ready-to-show", () => {
+    const settingsModel = readSettings();
+    updateSettingsWindow(settingsModel);
+  });
   settingsWindow.webContents.openDevTools({
     mode: "detach",
   });

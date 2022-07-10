@@ -15,8 +15,8 @@ contextBridge.exposeInMainWorld("api", {
   },
 
   receive: (channel, callback) => {
-    const validChannels = ["update-grid-settings"];
-    // logger.debug(`IpcBridge.back -> ${channel}`);
+    const validChannels = ["update-grid-settings", "update-settings"];
+    logger.debug(`IpcBridge.back -> ${channel}`);
     if (validChannels.includes(channel)) {
       logger.debug(`IpcBridge.back -> ${channel} whitelisted`);
       ipcRenderer.on(channel, callback);
