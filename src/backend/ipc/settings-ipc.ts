@@ -57,3 +57,14 @@ export function updateSettingsWindow(settings: SettingsModel) {
   const window = electronComponents.windows["SETTING_WINDOW"];
   window.webContents.send("update-settings", settings);
 }
+
+export function updateSettingsWindowList(windowList: Array<string>) {
+  logger.debug(
+    `SettingsWindow.send -> update-settings-window-list: ${JSON.stringify(
+      windowList
+    )}`
+  );
+
+  const window = electronComponents.windows["SETTING_WINDOW"];
+  window.webContents.send("update-settings-window-list", windowList);
+}

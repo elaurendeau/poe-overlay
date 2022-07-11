@@ -10,7 +10,6 @@ import {
   updateSettingsWindow,
   updateSettingsWindowList,
 } from "@/backend/ipc/settings-ipc";
-import logger from "@/backend/logger/logger";
 
 export function createSettingsWindow(): BrowserWindow {
   const settingsWindow = new BrowserWindow({
