@@ -4,6 +4,7 @@ import electron from "electron";
 import path from "path";
 import * as fs from "fs";
 import { createDefaultGridSettings } from "@/backend/manager/grid-manager";
+import { createDefaultOverlaySettings } from "@/backend/manager/overlay-manager";
 
 const userDataPath = (electron.app || electron.remote.app).getPath("userData");
 const SETTINGS_FILE_PATH = path.join(userDataPath, "settings.json");
@@ -43,9 +44,9 @@ export function readSettings(): SettingsModel {
 }
 
 export function createDefaultSettings(): SettingsModel {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const settings: SettingsModel = {
     settingsGrid: createDefaultGridSettings(),
+    settingsOverlay: createDefaultOverlaySettings(),
   };
   return settings;
 }

@@ -49,7 +49,7 @@ export default Vue.extend({
 </script>
 
 <template>
-  <v-container style="margin: 25px">
+  <v-container id="container">
     <v-row class="w-100">
       <v-col>
         <v-subheader class="pl-0 pb-5">Number of column:</v-subheader>
@@ -104,4 +104,11 @@ export default Vue.extend({
   </v-container>
 </template>
 
-<style scoped lang="sass"></style>
+<style scoped lang="sass">
+*
+  padding: 0
+  margin: 0
+
+#container
+  padding: 25px
+</style>

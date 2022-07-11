@@ -3,7 +3,8 @@ import Vue from "vue";
 import SettingsGridComponent from "@/frontend/views/component/SettingsGridComponent.vue";
 import { SettingsGridModel } from "@/backend/model/settings-grid-model";
 import { SettingsModel } from "@/backend/model/settings-model";
-import logger from "@/backend/logger/logger";
+import { SettingsOverlayModel } from "@/backend/model/settings-overlay-model";
+import SettingsOverlayComponent from "@/frontend/views/component/SettingsOverlayComponent.vue";
 
 export default Vue.extend({
   name: "SettingsView",
@@ -11,6 +12,7 @@ export default Vue.extend({
     return {
       settings: {
         settingsGrid: {} as SettingsGridModel,
+        settingsOverlay: {} as SettingsOverlayModel,
       } as SettingsModel,
       showOverlaySettings: true,
       showGridSettings: false,
@@ -21,6 +23,7 @@ export default Vue.extend({
   },
   components: {
     SettingsGridComponent,
+    SettingsOverlayComponent,
   },
   methods: {
     hide() {
@@ -42,6 +45,11 @@ export default Vue.extend({
       if (name === "grid") {
         this.showGridSettings = true;
         this.showOverlaySettings = false;
+      } else if (name === "overlay") {
+        console.log(`Value show grid settings ${this.showGridSettings}`);
+        console.log(`Value show overlay settings ${this.showOverlaySettings}`);
+        this.showGridSettings = false;
+        this.showOverlaySettings = true;
       }
     },
   },
@@ -78,6 +86,11 @@ export default Vue.extend({
           :grid-color.sync="settings.settingsGrid.color"
           v-if="showGridSettings"
         />
+
+        <SettingsOverlayComponent
+          :programName.sync="settings.settingsOverlay.programName"
+          v-if="showOverlaySettings"
+        />
       </v-container>
     </v-main>
     <v-navigation-drawer app permanent clipped right>
@@ -100,7 +113,7 @@ export default Vue.extend({
         class="d-flex flex-column h-100"
       >
         <v-list dense>
-          <v-list-item>
+          <v-list-item @click="showSettings('overlay')">
             <v-list-item-icon>
               <v-icon>mdi-buffer</v-icon>
             </v-list-item-icon>
