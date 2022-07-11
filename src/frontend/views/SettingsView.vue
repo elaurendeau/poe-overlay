@@ -15,7 +15,7 @@ export default Vue.extend({
         settingsOverlay: {} as SettingsOverlayModel,
       } as SettingsModel,
       windowNameArray: [],
-      showOverlaySettings: false,
+      showOverlaySettings: true,
       showGridSettings: false,
       showGrid: false,
       drawer: true,
@@ -53,12 +53,24 @@ export default Vue.extend({
         this.showOverlaySettings = true;
       }
     },
+
+    swapShowComponents() {
+      this.showGridSettings = !this.showGridSettings;
+      this.showOverlaySettings = !this.showOverlaySettings;
+    },
   },
   mounted() {
     window.api.receive("update-settings", (event, data) => {
       console.log(`Back.ipc -> update-settings '${JSON.stringify(data)}'`);
 
       this.settings = data;
+      this.swapShowComponents();
+
+      this.$nextTick(() => {
+        // Adding the component back in
+        this.swapShowComponents();
+      });
+
       this.$forceUpdate;
     });
   },
