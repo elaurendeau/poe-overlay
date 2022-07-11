@@ -1,4 +1,4 @@
-import { ipcMain } from "electron";
+import { desktopCapturer, ipcMain } from "electron";
 import logger from "@/backend/logger/logger";
 import {
   electronComponents,
@@ -15,6 +15,22 @@ export const hideSettings = ipcMain.on("hide-settings", async (event, args) => {
 
   electronComponents.windows[SETTINGS_WINDOW_KEY].hide();
 });
+
+export const refreshWindowNameArray = ipcMain.on(
+  "refresh-settings-window-array",
+  async (event, args) => {
+    logger.debug("IpcMain.receive -> refresh-settings-window-array");
+
+    desktopCapturer
+      .getSources({ types: ["window", "screen"] })
+      .then(async (sources) => {
+        event.reply(
+          "update-settings-window-list",
+          sources.map((source) => source.name)
+        );
+      });
+  }
+);
 export const saveSettings = ipcMain.on(
   "save-settings",
   async (event, settings: SettingsModel) => {
