@@ -1,4 +1,4 @@
-import { BrowserWindow, screen, Tray } from "electron";
+import { BrowserWindow, desktopCapturer, screen, Tray } from "electron";
 import path from "path";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import {
@@ -6,7 +6,11 @@ import {
   SETTINGS_WINDOW_KEY,
 } from "@/backend/electron-component/electron-components";
 import { readSettings } from "@/backend/manager/settings-manager";
-import { updateSettingsWindow } from "@/backend/ipc/settings-ipc";
+import {
+  updateSettingsWindow,
+  updateSettingsWindowList,
+} from "@/backend/ipc/settings-ipc";
+import logger from "@/backend/logger/logger";
 
 export function createSettingsWindow(): BrowserWindow {
   const settingsWindow = new BrowserWindow({
@@ -32,6 +36,14 @@ export function createSettingsWindow(): BrowserWindow {
   settingsWindow.on("ready-to-show", () => {
     const settingsModel = readSettings();
     updateSettingsWindow(settingsModel);
+  });
+
+  settingsWindow.on("ready-to-show", () => {
+    desktopCapturer
+      .getSources({ types: ["window", "screen"] })
+      .then(async (sources) => {
+        updateSettingsWindowList(sources.map((source) => source.name));
+      });
   });
   settingsWindow.webContents.openDevTools({
     mode: "detach",

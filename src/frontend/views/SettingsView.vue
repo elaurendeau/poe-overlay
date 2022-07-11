@@ -14,7 +14,8 @@ export default Vue.extend({
         settingsGrid: {} as SettingsGridModel,
         settingsOverlay: {} as SettingsOverlayModel,
       } as SettingsModel,
-      showOverlaySettings: true,
+      windowNameArray: [],
+      showOverlaySettings: false,
       showGridSettings: false,
       showGrid: false,
       drawer: true,
@@ -89,11 +90,12 @@ export default Vue.extend({
 
         <SettingsOverlayComponent
           :programName.sync="settings.settingsOverlay.programName"
+          :window-name-array.sync="windowNameArray"
           v-if="showOverlaySettings"
         />
       </v-container>
     </v-main>
-    <v-navigation-drawer app permanent clipped right>
+    <v-navigation-drawer app permanent clipped right style="padding: 15px">
       <template v-slot:prepend>
         <v-list-item two-line>
           <v-list-item-avatar>

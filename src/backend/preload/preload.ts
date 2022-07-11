@@ -7,7 +7,12 @@ contextBridge.exposeInMainWorld("api", {
   send: (channel, data) => {
     // whitelist channels
     logger.debug(`IpcBridge.front -> ${channel}`);
-    const validChannels = ["hide-settings", "toggle-grid", "save-settings"];
+    const validChannels = [
+      "hide-settings",
+      "toggle-grid",
+      "save-settings",
+      "refresh-settings-window-array",
+    ];
     logger.debug(`IpcBridge.front -> ${channel} whitelisted`);
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
@@ -15,7 +20,11 @@ contextBridge.exposeInMainWorld("api", {
   },
 
   receive: (channel, callback) => {
-    const validChannels = ["update-grid-settings", "update-settings"];
+    const validChannels = [
+      "update-grid-settings",
+      "update-settings",
+      "update-settings-window-list",
+    ];
     logger.debug(`IpcBridge.back -> ${channel}`);
     if (validChannels.includes(channel)) {
       logger.debug(`IpcBridge.back -> ${channel} whitelisted`);

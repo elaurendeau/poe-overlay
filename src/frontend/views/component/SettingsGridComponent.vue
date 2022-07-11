@@ -28,7 +28,6 @@ export default Vue.extend({
       this.$emit("update:rowCount", this.localRowCount);
     },
     localDisplayCenterLinesOnChange() {
-      console.log(this.localColor);
       this.$emit("update:displayCenterLines", this.localDisplayCenterLines);
     },
   },
