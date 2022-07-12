@@ -41,7 +41,7 @@ export default Vue.extend({
   },
   watch: {
     localColor(newValue) {
-      this.$emit("update:gridColor", this.localColor);
+      this.$emit("update:gridColor", newValue);
     },
   },
 });

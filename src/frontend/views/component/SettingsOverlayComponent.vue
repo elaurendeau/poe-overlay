@@ -1,5 +1,6 @@
 <script lang="ts">
-import Vue from "vue";
+import Vue, { PropType } from "vue";
+import { OverlayModel } from "@/backend/model/overlay-model";
 export default Vue.extend({
   name: "SettingsOverlayComponent",
   props: {
@@ -9,6 +10,9 @@ export default Vue.extend({
     },
     windowNameArray: {
       type: Array,
+    },
+    overlayArray: {
+      type: Array as PropType<OverlayModel[]>,
     },
   },
   methods: {
@@ -24,12 +28,35 @@ export default Vue.extend({
       this.localProgramName = value;
       this.programNameOnChange();
     },
+
+    createNewOverlay() {
+      this.localOverlayArray?.push({
+        name: "new",
+        captureX: 0,
+        captureY: 0,
+        captureXLength: 100,
+        captureYLength: 100,
+
+        positionX: 0,
+        positionY: 0,
+      });
+    },
   },
   data() {
     return {
       localProgramName: this.programName,
       localWindowNameArray: this.windowNameArray,
+      localOverlayArray: this.overlayArray,
       windowNameRefreshDegree: 0,
+      overlayHeaderArray: [
+        {
+          text: "Name",
+          align: "start",
+          value: "name",
+        },
+        { text: "Position", value: "position" },
+        { text: "Recording Position", value: "recording-position" },
+      ],
     };
   },
   mounted() {
@@ -74,7 +101,7 @@ export default Vue.extend({
             <v-col
               cols="1"
               justify-center
-              class="d-flex align-stretch"
+              class="d-flex align-stretch justify-end"
               @click="refreshWindowNameArray"
             >
               <v-icon
@@ -89,6 +116,38 @@ export default Vue.extend({
         </v-row>
       </v-col>
     </v-row>
+    <v-row no-gutters class="w-100 mt-5">
+      <v-col>
+        <v-subheader class="pl-0 pb-5">Overlays:</v-subheader>
+      </v-col>
+      <v-col class="d-flex justify-end">
+        <v-icon @click="createNewOverlay">mdi-plus-circle-outline</v-icon>
+      </v-col>
+    </v-row>
+    <v-row no-gutters class="w-100 mt-5">
+      <v-data-table
+        :headers="overlayHeaderArray"
+        :items="this.localOverlayArray"
+        hide-default-footer
+        class="elevation-1 w-100"
+      >
+        <template v-slot:[`item.position`]="{ item }">
+          <span>{{
+            `(${item.positionX}, ${item.positionY}, ${
+              item.positionX + item.captureXLength
+            }, ${item.positionY + item.captureYLength})`
+          }}</span>
+        </template>
+
+        <template v-slot:[`item.recording-position`]="{ item }">
+          <span>{{
+            `(${item.captureX}, ${item.captureY}, ${
+              item.captureX + item.captureXLength
+            }, ${item.captureY + item.captureYLength})`
+          }}</span>
+        </template>
+      </v-data-table></v-row
+    >
   </v-container>
 </template>
 

@@ -102,6 +102,7 @@ export default Vue.extend({
 
         <SettingsOverlayComponent
           :programName.sync="settings.settingsOverlay.programName"
+          :overlay-array.sync="settings.settingsOverlay.overlayArray"
           :window-name-array.sync="windowNameArray"
           v-if="showOverlaySettings"
         />
