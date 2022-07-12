@@ -16,4 +16,7 @@ export default {
 
 .h-100
   height: 100%
+
+.clicker
+  cursor: pointer
 </style>

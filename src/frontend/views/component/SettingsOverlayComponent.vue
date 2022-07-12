@@ -1,7 +1,8 @@
 <script lang="ts">
 import Vue, { PropType } from "vue";
 import { OverlayModel } from "@/backend/model/overlay-model";
-import { CoordinateModel } from "@/backend/model/coordinate-model";
+import { v4 as uuidv4 } from "uuid";
+import ConfirmDialogComponent from "@/frontend/views/component/ConfirmDialogComponent.vue";
 export default Vue.extend({
   name: "SettingsOverlayComponent",
   props: {
@@ -16,6 +17,9 @@ export default Vue.extend({
       type: Array as PropType<OverlayModel[]>,
     },
   },
+  components: {
+    ConfirmDialogComponent,
+  },
   methods: {
     programNameOnChange() {
       this.$emit("update:programName", this.localProgramName);
@@ -29,10 +33,9 @@ export default Vue.extend({
       this.localProgramName = value;
       this.programNameOnChange();
     },
-
     createNewOverlay() {
       this.localOverlayArray?.push({
-        id: "test",
+        id: uuidv4(),
         name: "new",
         captureCoordinate: {
           x: 0,
@@ -48,6 +51,26 @@ export default Vue.extend({
         },
       });
     },
+    cancelDeleteOverlay() {
+      this.deleteOverlayBuffer = null;
+      this.displayConfirmDialog = false;
+    },
+    confirmDeleteOverlay(overlay) {
+      this.deleteOverlayBuffer = overlay;
+      this.displayConfirmDialog = true;
+    },
+    deleteOverlay() {
+      if (this.deleteOverlayBuffer) {
+        const index = this.localOverlayArray.indexOf(
+          this.deleteOverlayBuffer,
+          0
+        );
+        if (index > -1) {
+          this.localOverlayArray.splice(index, 1);
+        }
+      }
+      this.displayConfirmDialog = false;
+    },
   },
   data() {
     return {
@@ -55,6 +78,8 @@ export default Vue.extend({
       localWindowNameArray: this.windowNameArray,
       localOverlayArray: this.overlayArray,
       windowNameRefreshDegree: 0,
+      displayConfirmDialog: false,
+      deleteOverlayBuffer: null,
       overlayHeaderArray: [
         {
           text: "Name",
@@ -109,7 +134,7 @@ export default Vue.extend({
             <v-col
               cols="1"
               justify-center
-              class="d-flex align-stretch justify-end"
+              class="d-flex align-stretch justify-end clicker"
               @click="refreshWindowNameArray"
             >
               <v-icon
@@ -129,39 +154,50 @@ export default Vue.extend({
         <v-subheader class="pl-0 pb-5">Overlays:</v-subheader>
       </v-col>
       <v-col class="d-flex justify-end">
-        <v-icon @click="createNewOverlay">mdi-plus-circle-outline</v-icon>
+        <span class="clicker" @click="createNewOverlay">
+          <v-icon>mdi-plus-circle-outline</v-icon>
+        </span>
       </v-col>
     </v-row>
     <v-row no-gutters class="w-100 mt-5">
       <v-data-table
         :headers="overlayHeaderArray"
         :items="this.localOverlayArray"
-        single-expand="true"
+        single-expand
+        item-key="id"
         hide-default-footer
         show-expand
         class="elevation-1 w-100"
       >
         <template v-slot:[`item.position`]="{ item }">
           <span>{{
-            `(${item.positionX}, ${item.positionY}, ${
-              item.positionX + item.captureXLength
-            }, ${item.positionY + item.captureYLength})`
+            `(${item.displayCoordinate.x}, ${item.displayCoordinate.y}, ${
+              item.displayCoordinate.x + item.captureLength.x
+            }, ${item.displayCoordinate.y + item.captureLength.y})`
           }}</span>
         </template>
 
         <template v-slot:[`item.recording-position`]="{ item }">
           <span>{{
-            `(${item.captureX}, ${item.captureY}, ${
-              item.captureX + item.captureXLength
-            }, ${item.captureY + item.captureYLength})`
+            `(${item.captureCoordinate.x}, ${item.captureCoordinate.y}, ${
+              item.captureCoordinate.x + item.captureLength.x
+            }, ${item.captureCoordinate.y + item.captureLength.y})`
           }}</span>
         </template>
 
         <template v-slot:expanded-item="{ headers, item }">
-          <td :colspan="headers.length">More info about {{ item.name }}</td>
+          <v-icon small class="clicker" @click="confirmDeleteOverlay(item)">
+            mdi-delete
+          </v-icon>
+          <td :colspan="headers.length">{{ JSON.stringify(item) }}</td>
         </template>
       </v-data-table></v-row
     >
+    <ConfirmDialogComponent
+      :dialog.sync="displayConfirmDialog"
+      @cancel-dialog="cancelDeleteOverlay"
+      @confirm-dialog="deleteOverlay"
+    />
   </v-container>
 </template>
 
