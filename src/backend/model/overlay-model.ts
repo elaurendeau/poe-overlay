@@ -1,10 +1,9 @@
-export interface OverlayModel {
-  name: string;
-  captureX: number;
-  captureY: number;
-  captureXLength: number;
-  captureYLength: number;
+import { CoordinateModel } from "@/backend/model/coordinate-model";
 
-  positionX: number;
-  positionY: number;
+export interface OverlayModel {
+  id: string;
+  name: string;
+  captureCoordinate: CoordinateModel;
+  captureLength: CoordinateModel;
+  displayCoordinate: CoordinateModel;
 }

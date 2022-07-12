@@ -1,6 +1,7 @@
 <script lang="ts">
 import Vue, { PropType } from "vue";
 import { OverlayModel } from "@/backend/model/overlay-model";
+import { CoordinateModel } from "@/backend/model/coordinate-model";
 export default Vue.extend({
   name: "SettingsOverlayComponent",
   props: {
@@ -31,14 +32,20 @@ export default Vue.extend({
 
     createNewOverlay() {
       this.localOverlayArray?.push({
+        id: "test",
         name: "new",
-        captureX: 0,
-        captureY: 0,
-        captureXLength: 100,
-        captureYLength: 100,
-
-        positionX: 0,
-        positionY: 0,
+        captureCoordinate: {
+          x: 0,
+          y: 0,
+        },
+        captureLength: {
+          x: 100,
+          y: 100,
+        },
+        displayCoordinate: {
+          x: 0,
+          y: 0,
+        },
       });
     },
   },
@@ -56,6 +63,7 @@ export default Vue.extend({
         },
         { text: "Position", value: "position" },
         { text: "Recording Position", value: "recording-position" },
+        { text: "", value: "data-table-expand" },
       ],
     };
   },
@@ -76,7 +84,7 @@ export default Vue.extend({
   <v-container id="container">
     <v-row no-gutters class="w-100">
       <v-col>
-        <v-subheader class="pl-0 pb-5">Name of program:</v-subheader>
+        <v-subheader class="pl-0 pb-5">Game Window Name:</v-subheader>
         <v-row>
           <v-flex
             class="d-flex align-stretch"
@@ -128,7 +136,9 @@ export default Vue.extend({
       <v-data-table
         :headers="overlayHeaderArray"
         :items="this.localOverlayArray"
+        single-expand="true"
         hide-default-footer
+        show-expand
         class="elevation-1 w-100"
       >
         <template v-slot:[`item.position`]="{ item }">
@@ -145,6 +155,10 @@ export default Vue.extend({
               item.captureX + item.captureXLength
             }, ${item.captureY + item.captureYLength})`
           }}</span>
+        </template>
+
+        <template v-slot:expanded-item="{ headers, item }">
+          <td :colspan="headers.length">More info about {{ item.name }}</td>
         </template>
       </v-data-table></v-row
     >
