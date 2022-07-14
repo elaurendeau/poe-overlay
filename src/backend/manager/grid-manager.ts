@@ -1,10 +1,5 @@
 import { SettingsGridModel } from "@/backend/model/settings-grid-model";
-import { SettingsModel } from "@/backend/model/settings-model";
 import { app, screen } from "electron";
-
-// export function updateGridBySettings(gridSettings: SettingsGridModel) {
-//   ipcMain.emit("update-grid", gridSettings);
-// }
 
 export function validateGridSettings(gridSettings: SettingsGridModel) {
   if (

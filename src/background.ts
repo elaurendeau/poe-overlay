@@ -4,9 +4,11 @@ import { createTray } from "@/backend/electron-component/tray/main-tray";
 
 import "@/backend/ipc/settings-ipc";
 import "@/backend/ipc/grid-ipc";
+import "@/backend/ipc/overlay-position-editor-ipc";
 import logger from "@/backend/logger/logger";
 import { createGridWindow } from "@/backend/electron-component/window/grid-window";
 import { createSettingsWindow } from "@/backend/electron-component/window/settings-window";
+import { createOverlayPositionEditorWindow } from "@/backend/electron-component/window/overlay-position-editor-window";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -37,6 +39,7 @@ app.on("activate", () => {
 
 app.on("ready", async () => {
   logger.info("Creating overlay and tray");
+  createOverlayPositionEditorWindow();
   createOverlayWindow();
   createSettingsWindow();
   createGridWindow();

@@ -12,9 +12,10 @@ contextBridge.exposeInMainWorld("api", {
       "toggle-grid",
       "save-settings",
       "refresh-settings-window-array",
+      "toggle-overlay-position-editor",
     ];
-    logger.debug(`IpcBridge.front -> ${channel} whitelisted`);
     if (validChannels.includes(channel)) {
+      logger.debug(`IpcBridge.front -> ${channel} whitelisted`);
       ipcRenderer.send(channel, data);
     }
   },

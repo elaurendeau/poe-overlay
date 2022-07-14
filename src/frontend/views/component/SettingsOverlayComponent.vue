@@ -3,6 +3,8 @@ import Vue, { PropType } from "vue";
 import { OverlayModel } from "@/backend/model/overlay-model";
 import { v4 as uuidv4 } from "uuid";
 import ConfirmDialogComponent from "@/frontend/views/component/ConfirmDialogComponent.vue";
+import SettingsOverlayEditComponent from "@/frontend/views/component/SettingsOverlayEditComponent.vue";
+
 export default Vue.extend({
   name: "SettingsOverlayComponent",
   props: {
@@ -19,6 +21,8 @@ export default Vue.extend({
   },
   components: {
     ConfirmDialogComponent,
+    // eslint-disable-next-line vue/no-unused-components
+    SettingsOverlayEditComponent,
   },
   methods: {
     programNameOnChange() {
@@ -51,18 +55,30 @@ export default Vue.extend({
         },
       });
     },
+    editOverlay(overlay) {
+      this.currentOverlayBuffer = overlay;
+      this.displayEditDialog = true;
+    },
+    cancelEditOverlay() {
+      this.currentOverlayBuffer = null;
+      this.displayEditDialog = false;
+    },
+    saveEditOverlay() {
+      this.currentOverlayBuffer = null;
+      this.displayEditDialog = false;
+    },
     cancelDeleteOverlay() {
-      this.deleteOverlayBuffer = null;
+      this.currentOverlayBuffer = null;
       this.displayConfirmDialog = false;
     },
     confirmDeleteOverlay(overlay) {
-      this.deleteOverlayBuffer = overlay;
+      this.currentOverlayBuffer = overlay;
       this.displayConfirmDialog = true;
     },
     deleteOverlay() {
-      if (this.deleteOverlayBuffer) {
+      if (this.currentOverlayBuffer) {
         const index = this.localOverlayArray.indexOf(
-          this.deleteOverlayBuffer,
+          this.currentOverlayBuffer,
           0
         );
         if (index > -1) {
@@ -79,7 +95,8 @@ export default Vue.extend({
       localOverlayArray: this.overlayArray,
       windowNameRefreshDegree: 0,
       displayConfirmDialog: false,
-      deleteOverlayBuffer: null,
+      displayEditDialog: false,
+      currentOverlayBuffer: null,
       overlayHeaderArray: [
         {
           text: "Name",
@@ -88,7 +105,7 @@ export default Vue.extend({
         },
         { text: "Position", value: "position" },
         { text: "Recording Position", value: "recording-position" },
-        { text: "", value: "data-table-expand" },
+        { text: "Actions", value: "actions", sortable: false },
       ],
     };
   },
@@ -142,8 +159,8 @@ export default Vue.extend({
                 v-bind:style="{
                   transform: `rotate(${windowNameRefreshDegree}deg)`,
                 }"
-                >mdi-refresh</v-icon
-              >
+                >mdi-refresh
+              </v-icon>
             </v-col>
           </v-flex>
         </v-row>
@@ -163,10 +180,8 @@ export default Vue.extend({
       <v-data-table
         :headers="overlayHeaderArray"
         :items="this.localOverlayArray"
-        single-expand
         item-key="id"
         hide-default-footer
-        show-expand
         class="elevation-1 w-100"
       >
         <template v-slot:[`item.position`]="{ item }">
@@ -185,14 +200,29 @@ export default Vue.extend({
           }}</span>
         </template>
 
-        <template v-slot:expanded-item="{ headers, item }">
-          <v-icon small class="clicker" @click="confirmDeleteOverlay(item)">
-            mdi-delete
-          </v-icon>
-          <td :colspan="headers.length">{{ JSON.stringify(item) }}</td>
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-container class="d-flex">
+            <v-icon small class="clicker" @click="editOverlay(item)">
+              mdi-pencil-outline
+            </v-icon>
+            <v-icon
+              small
+              class="clicker ml-auto"
+              @click="confirmDeleteOverlay(item)"
+            >
+              mdi-delete-outline
+            </v-icon>
+          </v-container>
         </template>
-      </v-data-table></v-row
-    >
+      </v-data-table>
+    </v-row>
+    <SettingsOverlayEditComponent
+      :overlay="currentOverlayBuffer"
+      :key="currentOverlayBuffer"
+      :dialog.sync="displayEditDialog"
+      @cancel-dialog="cancelEditOverlay"
+      @save-dialog="saveEditOverlay"
+    />
     <ConfirmDialogComponent
       :dialog.sync="displayConfirmDialog"
       @cancel-dialog="cancelDeleteOverlay"
@@ -205,6 +235,7 @@ export default Vue.extend({
 *
   margin: 0
   padding: 0
+
 #container
   padding: 25px
 

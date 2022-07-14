@@ -15,10 +15,10 @@ export const toggleGrid = ipcMain.on("toggle-grid", async (event, args) => {
   }
 
   if (gridWindow.isVisible()) {
-    logger.debug("isVisible, hiding!");
+    logger.debug("Grid isVisible, hiding!");
     gridWindow.hide();
   } else {
-    logger.debug("is not Visible, showing!");
+    logger.debug("Grid is not Visible, showing!");
     gridWindow.show();
   }
 });

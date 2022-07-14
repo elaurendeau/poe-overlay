@@ -3,6 +3,8 @@ import { Tray, BrowserWindow } from "electron";
 export const OVERLAY_WINDOW_KEY = "OVERLAY_WINDOW";
 export const SETTINGS_WINDOW_KEY = "SETTING_WINDOW";
 export const GRID_WINDOW_KEY = "GRID_WINDOW";
+export const OVERLAY_POSITION_EDITOR_WINDOW_KEY =
+  "OVERLAY_POSITION_EDITOR_WINDOW";
 
 export type WindowsKey =
   | typeof OVERLAY_WINDOW_KEY
