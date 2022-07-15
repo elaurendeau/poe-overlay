@@ -28,12 +28,10 @@ export function createDefaultGridSettings(): SettingsGridModel {
   const displayWidth = primaryDisplay.size.width;
   const displayHeight = primaryDisplay.size.height;
 
-  const settingsGrid: SettingsGridModel = {
+  return {
     columnCount: displayWidth / 20,
     rowCount: displayHeight / 20,
     displayCenterLines: true,
     color: "#FF000039",
-  };
-
-  return settingsGrid;
+  } as SettingsGridModel;
 }

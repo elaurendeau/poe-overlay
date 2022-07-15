@@ -1,10 +1,8 @@
 import { SettingsOverlayModel } from "@/backend/model/settings-overlay-model";
 
 export function createDefaultOverlaySettings(): SettingsOverlayModel {
-  const settingsOverlay: SettingsOverlayModel = {
+  return {
     programName: "Path of Exile",
     overlayArray: [],
-  };
-
-  return settingsOverlay;
+  } as SettingsOverlayModel;
 }

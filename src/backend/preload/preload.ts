@@ -13,6 +13,7 @@ contextBridge.exposeInMainWorld("api", {
       "save-settings",
       "refresh-settings-window-array",
       "toggle-overlay-position-editor",
+      "hide-overlay-position-editor",
     ];
     if (validChannels.includes(channel)) {
       logger.debug(`IpcBridge.front -> ${channel} whitelisted`);
@@ -25,6 +26,8 @@ contextBridge.exposeInMainWorld("api", {
       "update-grid-settings",
       "update-settings",
       "update-settings-window-list",
+      "resize-overlay-position-editor",
+      "change-settings-overlay-position-editor",
     ];
     logger.debug(`IpcBridge.back -> ${channel}`);
     if (validChannels.includes(channel)) {

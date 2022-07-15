@@ -1,9 +1,8 @@
-import { CoordinateModel } from "@/backend/model/coordinate-model";
+import { RectangleModel } from "@/backend/model/rectangle-model";
 
 export interface OverlayModel {
   id: string;
   name: string;
-  captureCoordinate: CoordinateModel;
-  captureLength: CoordinateModel;
-  displayCoordinate: CoordinateModel;
+  captureRectangle: RectangleModel;
+  displayRectangle: RectangleModel;
 }

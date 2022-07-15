@@ -6,7 +6,7 @@ import {
   GRID_WINDOW_KEY,
 } from "@/backend/electron-component/electron-components";
 import { updateGridWindowSettings } from "@/backend/ipc/grid-ipc";
-import { readSettings } from "@/backend/manager/settings-manager";
+import { getSettings, readSettings } from "@/backend/manager/settings-manager";
 
 export function createGridWindow(): BrowserWindow {
   const primaryDisplay = screen.getPrimaryDisplay();
@@ -33,8 +33,8 @@ export function createGridWindow(): BrowserWindow {
   });
 
   gridWindow.on("ready-to-show", () => {
-    const settingsModel = readSettings();
-    updateGridWindowSettings(settingsModel.settingsGrid);
+    const settings = getSettings();
+    updateGridWindowSettings(settings.settingsGrid);
   });
   gridWindow.webContents.openDevTools({
     mode: "detach",

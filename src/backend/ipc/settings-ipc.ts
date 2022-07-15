@@ -2,13 +2,18 @@ import { desktopCapturer, ipcMain } from "electron";
 import logger from "@/backend/logger/logger";
 import {
   electronComponents,
+  OVERLAY_POSITION_EDITOR_WINDOW_KEY,
   SETTINGS_WINDOW_KEY,
 } from "@/backend/electron-component/electron-components";
 import { SettingsModel } from "@/backend/model/settings-model";
 import { validateGridSettings } from "@/backend/manager/grid-manager";
 
-import { writeSettings } from "@/backend/manager/settings-manager";
+import {
+  updateAllSettings,
+  writeSettings,
+} from "@/backend/manager/settings-manager";
 import { updateGridWindowSettings } from "@/backend/ipc/grid-ipc";
+import { updateOverlayPositionEditorSettings } from "@/backend/ipc/overlay-position-editor-ipc";
 
 export const hideSettings = ipcMain.on("hide-settings", async (event, args) => {
   logger.debug("IpcMain.receive -> hide-settings");
@@ -41,7 +46,7 @@ export const saveSettings = ipcMain.on(
     try {
       validateGridSettings(settings.settingsGrid);
       writeSettings(settings);
-      updateGridWindowSettings(settings.settingsGrid);
+      updateAllSettings(settings);
     } catch (e) {
       //Do nothing for now
       logger.error(e);

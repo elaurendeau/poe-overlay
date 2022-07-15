@@ -5,7 +5,7 @@ import {
   electronComponents,
   SETTINGS_WINDOW_KEY,
 } from "@/backend/electron-component/electron-components";
-import { readSettings } from "@/backend/manager/settings-manager";
+import { getSettings, readSettings } from "@/backend/manager/settings-manager";
 import {
   updateSettingsWindow,
   updateSettingsWindowList,
@@ -33,8 +33,8 @@ export function createSettingsWindow(): BrowserWindow {
     },
   });
   settingsWindow.on("ready-to-show", () => {
-    const settingsModel = readSettings();
-    updateSettingsWindow(settingsModel);
+    const settings = getSettings();
+    updateSettingsWindow(settings);
 
     desktopCapturer
       .getSources({ types: ["window", "screen"] })

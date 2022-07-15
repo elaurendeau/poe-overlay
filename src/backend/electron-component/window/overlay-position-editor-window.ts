@@ -1,10 +1,13 @@
-import { BrowserWindow, screen } from "electron";
+import { BrowserWindow, desktopCapturer, screen } from "electron";
 import path from "path";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import {
   electronComponents,
   OVERLAY_POSITION_EDITOR_WINDOW_KEY,
 } from "@/backend/electron-component/electron-components";
+import { updateOverlayPositionCoordinates } from "@/backend/manager/overlay-position-editor-manager";
+import { updateOverlayPositionEditorSettings } from "@/backend/ipc/overlay-position-editor-ipc";
+import { getSettings } from "@/backend/manager/settings-manager";
 
 export function createOverlayPositionEditorWindow(): BrowserWindow {
   // Create the browser window.
@@ -28,6 +31,17 @@ export function createOverlayPositionEditorWindow(): BrowserWindow {
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
       preload: path.join(__dirname, "preload.js"),
     },
+  });
+  overlay.on("ready-to-show", () => {
+    const settings = getSettings();
+    updateOverlayPositionEditorSettings(settings.settingsOverlayPositionEditor);
+  });
+  overlay.on("resized", () => {
+    updateOverlayPositionCoordinates();
+  });
+
+  overlay.on("moved", () => {
+    updateOverlayPositionCoordinates();
   });
 
   overlay.webContents.openDevTools({

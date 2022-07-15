@@ -25,6 +25,11 @@ export default Vue.extend({
     SettingsOverlayEditComponent,
   },
   methods: {
+    hideOverlayPositionEditor() {
+      console.log("Front.ipc -> hide-overlay-position-editor");
+      window.api.send("hide-overlay-position-editor");
+    },
+
     programNameOnChange() {
       this.$emit("update:programName", this.localProgramName);
     },
@@ -41,17 +46,17 @@ export default Vue.extend({
       this.localOverlayArray?.push({
         id: uuidv4(),
         name: "new",
-        captureCoordinate: {
-          x: 0,
-          y: 0,
+        displayRectangle: {
+          startX: 0,
+          startY: 0,
+          endX: 100,
+          endY: 50,
         },
-        captureLength: {
-          x: 100,
-          y: 100,
-        },
-        displayCoordinate: {
-          x: 0,
-          y: 0,
+        captureRectangle: {
+          startX: 200,
+          startY: 200,
+          endX: 300,
+          endY: 250,
         },
       });
     },
@@ -62,10 +67,12 @@ export default Vue.extend({
     cancelEditOverlay() {
       this.currentOverlayBuffer = null;
       this.displayEditDialog = false;
+      this.hideOverlayPositionEditor();
     },
     saveEditOverlay() {
       this.currentOverlayBuffer = null;
       this.displayEditDialog = false;
+      this.hideOverlayPositionEditor();
     },
     cancelDeleteOverlay() {
       this.currentOverlayBuffer = null;
@@ -103,8 +110,8 @@ export default Vue.extend({
           align: "start",
           value: "name",
         },
-        { text: "Position", value: "position" },
-        { text: "Recording Position", value: "recording-position" },
+        { text: "Display Position", value: "display-position" },
+        { text: "Capture Position", value: "capture-position" },
         { text: "Actions", value: "actions", sortable: false },
       ],
     };
@@ -184,19 +191,15 @@ export default Vue.extend({
         hide-default-footer
         class="elevation-1 w-100"
       >
-        <template v-slot:[`item.position`]="{ item }">
+        <template v-slot:[`item.display-position`]="{ item }">
           <span>{{
-            `(${item.displayCoordinate.x}, ${item.displayCoordinate.y}, ${
-              item.displayCoordinate.x + item.captureLength.x
-            }, ${item.displayCoordinate.y + item.captureLength.y})`
+            `(${item.displayRectangle.startX}, ${item.displayRectangle.startY}, ${item.displayRectangle.endX}, ${item.displayRectangle.endY})`
           }}</span>
         </template>
 
-        <template v-slot:[`item.recording-position`]="{ item }">
+        <template v-slot:[`item.capture-position`]="{ item }">
           <span>{{
-            `(${item.captureCoordinate.x}, ${item.captureCoordinate.y}, ${
-              item.captureCoordinate.x + item.captureLength.x
-            }, ${item.captureCoordinate.y + item.captureLength.y})`
+            `(${item.captureRectangle.startX}, ${item.captureRectangle.startY}, ${item.captureRectangle.endX}, ${item.captureRectangle.endY})`
           }}</span>
         </template>
 
@@ -217,8 +220,9 @@ export default Vue.extend({
       </v-data-table>
     </v-row>
     <SettingsOverlayEditComponent
+      v-if="currentOverlayBuffer"
       :overlay="currentOverlayBuffer"
-      :key="currentOverlayBuffer"
+      :key="currentOverlayBuffer.id"
       :dialog.sync="displayEditDialog"
       @cancel-dialog="cancelEditOverlay"
       @save-dialog="saveEditOverlay"

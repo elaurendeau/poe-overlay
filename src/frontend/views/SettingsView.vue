@@ -5,6 +5,8 @@ import { SettingsGridModel } from "@/backend/model/settings-grid-model";
 import { SettingsModel } from "@/backend/model/settings-model";
 import { SettingsOverlayModel } from "@/backend/model/settings-overlay-model";
 import SettingsOverlayComponent from "@/frontend/views/component/SettingsOverlayComponent.vue";
+import { SettingsOverlayPositionEditorModel } from "@/backend/model/settings-overlay-position-editor-model";
+import SettingsPositionEditorComponent from "@/frontend/views/component/SettingsPositionEditorComponent.vue";
 
 export default Vue.extend({
   name: "SettingsView",
@@ -13,10 +15,12 @@ export default Vue.extend({
       settings: {
         settingsGrid: {} as SettingsGridModel,
         settingsOverlay: {} as SettingsOverlayModel,
+        settingsOverlayPositionEditor: {} as SettingsOverlayPositionEditorModel,
       } as SettingsModel,
       windowNameArray: [],
       showOverlaySettings: true,
       showGridSettings: false,
+      showOverlayPositionEditorSettings: false,
       showGrid: false,
       drawer: true,
       mini: true,
@@ -25,6 +29,7 @@ export default Vue.extend({
   components: {
     SettingsGridComponent,
     SettingsOverlayComponent,
+    SettingsPositionEditorComponent,
   },
   methods: {
     hide() {
@@ -46,11 +51,19 @@ export default Vue.extend({
       if (name === "grid") {
         this.showGridSettings = true;
         this.showOverlaySettings = false;
+        this.showOverlayPositionEditorSettings = false;
       } else if (name === "overlay") {
         console.log(`Value show grid settings ${this.showGridSettings}`);
         console.log(`Value show overlay settings ${this.showOverlaySettings}`);
         this.showGridSettings = false;
         this.showOverlaySettings = true;
+        this.showOverlayPositionEditorSettings = false;
+      } else if (name === "overlayPositionEditor") {
+        console.log(`Value show grid settings ${this.showGridSettings}`);
+        console.log(`Value show overlay settings ${this.showOverlaySettings}`);
+        this.showGridSettings = false;
+        this.showOverlaySettings = false;
+        this.showOverlayPositionEditorSettings = true;
       }
     },
 
@@ -106,6 +119,16 @@ export default Vue.extend({
           :window-name-array.sync="windowNameArray"
           v-if="showOverlaySettings"
         />
+
+        <SettingsPositionEditorComponent
+          :capture-color-editor.sync="
+            settings.settingsOverlayPositionEditor.capturePositionEditorColor
+          "
+          :display-color-editor.sync="
+            settings.settingsOverlayPositionEditor.displayPositionEditorColor
+          "
+          v-if="showOverlayPositionEditorSettings"
+        />
       </v-container>
     </v-main>
     <v-navigation-drawer app permanent clipped right style="padding: 15px">
@@ -143,13 +166,23 @@ export default Vue.extend({
             </v-list-item-icon>
 
             <v-list-item-content>
-              <v-list-item-title>Show Grid</v-list-item-title>
+              <v-list-item-title>Grid Layout</v-list-item-title>
             </v-list-item-content>
 
             <v-list-item-icon @click="gridToggle">
               <v-icon v-if="!showGrid">mdi-eye-off-outline</v-icon>
               <v-icon v-if="showGrid">mdi-eye-outline</v-icon>
             </v-list-item-icon>
+          </v-list-item>
+
+          <v-list-item @click="showSettings('overlayPositionEditor')">
+            <v-list-item-icon>
+              <v-icon>mdi-solar-panel</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title>Position Editor</v-list-item-title>
+            </v-list-item-content>
           </v-list-item>
         </v-list>
 

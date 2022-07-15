@@ -41,9 +41,9 @@ app.on("ready", async () => {
   logger.info("Creating overlay and tray");
   createOverlayPositionEditorWindow();
   createOverlayWindow();
-  createSettingsWindow();
   createGridWindow();
   createTray();
+  createSettingsWindow();
 });
 
 // Exit cleanly on request from parent process in development mode.
