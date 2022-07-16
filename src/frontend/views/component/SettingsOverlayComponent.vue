@@ -4,6 +4,7 @@ import { OverlayModel } from "@/backend/model/overlay-model";
 import { v4 as uuidv4 } from "uuid";
 import ConfirmDialogComponent from "@/frontend/views/component/ConfirmDialogComponent.vue";
 import SettingsOverlayEditComponent from "@/frontend/views/component/SettingsOverlayEditComponent.vue";
+import { WindowSourcePropertiesModel } from "@/backend/model/window-source-properties-model";
 
 export default Vue.extend({
   name: "SettingsOverlayComponent",
@@ -12,11 +13,13 @@ export default Vue.extend({
       type: String,
       default: "",
     },
-    windowNameArray: {
-      type: Array,
+    windowSourceArray: {
+      type: Array as PropType<Array<WindowSourcePropertiesModel>>,
+      default: () => [],
     },
     overlayArray: {
       type: Array as PropType<OverlayModel[]>,
+      default: () => [],
     },
   },
   components: {
@@ -39,7 +42,7 @@ export default Vue.extend({
       this.windowNameRefreshDegree += 360;
     },
     windowNameListOnChange(value) {
-      this.localProgramName = value;
+      this.localProgramName = value.programName;
       this.programNameOnChange();
     },
     createNewOverlay() {
@@ -98,7 +101,7 @@ export default Vue.extend({
   data() {
     return {
       localProgramName: this.programName,
-      localWindowNameArray: this.windowNameArray,
+      localWindowArray: this.windowSourceArray,
       localOverlayArray: this.overlayArray,
       windowNameRefreshDegree: 0,
       displayConfirmDialog: false,
@@ -122,7 +125,7 @@ export default Vue.extend({
         `Back.ipc -> update-settings-window-list '${JSON.stringify(data)}'`
       );
 
-      this.localWindowNameArray = data;
+      this.localWindowArray = data;
       this.$forceUpdate;
     });
   },
@@ -149,10 +152,12 @@ export default Vue.extend({
             </v-col>
             <v-col cols="5">
               <v-select
-                :items="localWindowNameArray"
+                item-text="programName"
+                :items="localWindowArray"
                 @change="windowNameListOnChange"
                 outlined
                 hide-details
+                return-object
               ></v-select>
             </v-col>
             <v-col

@@ -2,7 +2,6 @@ import { desktopCapturer, ipcMain } from "electron";
 import logger from "@/backend/logger/logger";
 import {
   electronComponents,
-  OVERLAY_CAPTURE_POSITION_EDITOR_WINDOW_KEY,
   SETTINGS_WINDOW_KEY,
 } from "@/backend/electron-component/electron-components";
 import { SettingsModel } from "@/backend/model/settings-model";
@@ -12,8 +11,7 @@ import {
   updateAllSettings,
   writeSettings,
 } from "@/backend/manager/settings-manager";
-import { updateGridWindowSettings } from "@/backend/ipc/grid-ipc";
-import { updateOverlayPositionEditorSettings } from "@/backend/ipc/overlay-position-editor-ipc";
+import { WindowSourcePropertiesModel } from "@/backend/model/window-source-properties-model";
 
 export const hideSettings = ipcMain.on("hide-settings", async (event, args) => {
   logger.debug("IpcMain.receive -> hide-settings");
@@ -31,7 +29,12 @@ export const refreshWindowNameArray = ipcMain.on(
       .then(async (sources) => {
         event.reply(
           "update-settings-window-list",
-          sources.map((source) => source.name)
+          sources.map((source) => {
+            return {
+              programName: source.name,
+              programId: source.id,
+            } as WindowSourcePropertiesModel;
+          })
         );
       });
   }

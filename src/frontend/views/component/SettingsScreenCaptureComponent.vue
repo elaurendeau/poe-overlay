@@ -1,5 +1,6 @@
 <script lang="ts">
-import Vue from "vue";
+import Vue, { PropType } from "vue";
+import { WindowSourcePropertiesModel } from "@/backend/model/window-source-properties-model";
 export default Vue.extend({
   name: "SettingsScreenCaptureComponent",
   props: {
@@ -7,8 +8,9 @@ export default Vue.extend({
       type: String,
       default: "",
     },
-    windowNameArray: {
-      type: Array,
+    windowSourceArray: {
+      type: Array as PropType<Array<WindowSourcePropertiesModel>>,
+      default: () => [],
     },
   },
   methods: {
@@ -21,14 +23,16 @@ export default Vue.extend({
       this.windowNameRefreshDegree += 360;
     },
     windowNameListOnChange(value) {
-      this.localProgramName = value;
+      console.log("---------------------");
+      console.log(JSON.stringify(value));
+      this.localProgramName = value.programName;
       this.programNameOnChange();
     },
   },
   data() {
     return {
       localProgramName: this.programName,
-      localWindowNameArray: this.windowNameArray,
+      localWindowArray: this.windowSourceArray,
       windowNameRefreshDegree: 0,
     };
   },
@@ -39,7 +43,7 @@ export default Vue.extend({
         `Back.ipc -> update-settings-window-list '${JSON.stringify(data)}'`
       );
 
-      this.localWindowNameArray = data;
+      this.localWindowArray = data;
       this.$forceUpdate;
     });
   },
@@ -66,11 +70,14 @@ export default Vue.extend({
             </v-col>
             <v-col cols="5">
               <v-select
-                :items="localWindowNameArray"
+                item-text="programName"
+                :items="localWindowArray"
                 @change="windowNameListOnChange"
                 outlined
                 hide-details
-              ></v-select>
+                return-object
+              >
+              </v-select>
             </v-col>
             <v-col
               cols="1"

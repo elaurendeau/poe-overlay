@@ -20,7 +20,7 @@ export default Vue.extend({
         settingsOverlayPositionEditor: {} as SettingsOverlayPositionEditorModel,
         settingsScreenCapture: {} as SettingsScreenCaptureModel,
       } as SettingsModel,
-      windowNameArray: [],
+      windowSourceArray: [],
       showOverlaySettings: true,
       showGridSettings: false,
       showOverlayPositionEditorSettings: false,
