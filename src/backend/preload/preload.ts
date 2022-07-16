@@ -12,7 +12,8 @@ contextBridge.exposeInMainWorld("api", {
       "toggle-grid",
       "save-settings",
       "refresh-settings-window-array",
-      "toggle-overlay-position-editor",
+      "toggle-overlay-capture-position-editor",
+      "toggle-overlay-display-position-editor",
       "hide-overlay-position-editor",
     ];
     if (validChannels.includes(channel)) {
@@ -26,7 +27,8 @@ contextBridge.exposeInMainWorld("api", {
       "update-grid-settings",
       "update-settings",
       "update-settings-window-list",
-      "resize-overlay-position-editor",
+      "resize-overlay-display-position-editor",
+      "resize-overlay-capture-position-editor",
       "change-settings-overlay-position-editor",
     ];
     logger.debug(`IpcBridge.back -> ${channel}`);

@@ -20,7 +20,14 @@ export default Vue.extend({
         endX: this.overlay?.captureRectangle.endX,
         endY: this.overlay?.captureRectangle.endY,
       } as RectangleModel,
-      showOverlayPositionEditor: false,
+      localDisplayRectangle: {
+        startX: this.overlay?.displayRectangle.startX,
+        startY: this.overlay?.displayRectangle.startY,
+        endX: this.overlay?.displayRectangle.endX,
+        endY: this.overlay?.displayRectangle.endY,
+      } as RectangleModel,
+      showOverlayCapturePositionEditor: false,
+      showOverlayDisplayPositionEditor: false,
     };
   },
   methods: {
@@ -29,32 +36,76 @@ export default Vue.extend({
     },
     save() {
       this.localOverlay.captureRectangle = this.localCaptureRectangle;
+      this.localOverlay.displayRectangle = this.localDisplayRectangle;
       Object.assign(this.overlay, this.localOverlay);
       this.$emit("save-dialog", this.overlay);
     },
-    toggleOverlayPositionEditor() {
-      console.log("Front.ipc -> toggle-overlay-position-editor");
-      this.showOverlayPositionEditor = !this.showOverlayPositionEditor;
-      window.api.send("toggle-overlay-position-editor", this.localOverlay);
+    toggleOverlayCapturePositionEditor() {
+      console.log("Front.ipc -> toggle-overlay-capture-position-editor");
+      this.showOverlayCapturePositionEditor =
+        !this.showOverlayCapturePositionEditor;
+      window.api.send(
+        "toggle-overlay-capture-position-editor",
+        this.localOverlay
+      );
+    },
+    toggleOverlayDisplayPositionEditor() {
+      console.log("Front.ipc -> toggle-overlay-display-position-editor");
+      this.showOverlayDisplayPositionEditor =
+        !this.showOverlayDisplayPositionEditor;
+      window.api.send(
+        "toggle-overlay-display-position-editor",
+        this.localOverlay
+      );
     },
   },
 
   mounted() {
-    window.api.receive("resize-overlay-position-editor", (event, data) => {
-      console.log(
-        `Back.ipc -> resize-overlay-position-editor '${JSON.stringify(data)}'`
-      );
+    window.api.receive(
+      "resize-overlay-capture-position-editor",
+      (event, data) => {
+        console.log(
+          `Back.ipc -> resize-capture-capture-position-editor '${JSON.stringify(
+            data
+          )}'`
+        );
 
-      console.log(
-        `Current local overlay ${JSON.stringify(this.localCaptureRectangle)}`
-      );
-      this.localCaptureRectangle.startX = data.startX;
-      this.localCaptureRectangle.startY = data.startY;
-      this.localCaptureRectangle.endX = data.endX;
-      this.localCaptureRectangle.endY = data.endY;
+        console.log(
+          `Current local capture overlay ${JSON.stringify(
+            this.localCaptureRectangle
+          )}`
+        );
+        this.localCaptureRectangle.startX = data.startX;
+        this.localCaptureRectangle.startY = data.startY;
+        this.localCaptureRectangle.endX = data.endX;
+        this.localCaptureRectangle.endY = data.endY;
 
-      this.$forceUpdate();
-    });
+        this.$forceUpdate();
+      }
+    );
+
+    window.api.receive(
+      "resize-overlay-display-position-editor",
+      (event, data) => {
+        console.log(
+          `Back.ipc -> resize-capture-display-position-editor '${JSON.stringify(
+            data
+          )}'`
+        );
+
+        console.log(
+          `Current local display overlay ${JSON.stringify(
+            this.localDisplayRectangle
+          )}`
+        );
+        this.localDisplayRectangle.startX = data.startX;
+        this.localDisplayRectangle.startY = data.startY;
+        this.localDisplayRectangle.endX = data.endX;
+        this.localDisplayRectangle.endY = data.endY;
+
+        this.$forceUpdate();
+      }
+    );
   },
 });
 </script>
@@ -174,13 +225,15 @@ export default Vue.extend({
           </v-row>
           <v-row>
             <v-col cols="2" sm="6" md="4">
-              <v-btn depressed @click="toggleOverlayPositionEditor">
+              <v-btn depressed @click="toggleOverlayCapturePositionEditor">
                 Record position
               </v-btn>
             </v-col>
 
             <v-col cols="2" sm="6" md="4">
-              <v-btn depressed> Display position </v-btn>
+              <v-btn depressed @click="toggleOverlayDisplayPositionEditor">
+                Display position
+              </v-btn>
             </v-col>
           </v-row>
         </v-container>

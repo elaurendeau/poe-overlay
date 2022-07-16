@@ -2,7 +2,7 @@ import { desktopCapturer, ipcMain } from "electron";
 import logger from "@/backend/logger/logger";
 import {
   electronComponents,
-  OVERLAY_POSITION_EDITOR_WINDOW_KEY,
+  OVERLAY_CAPTURE_POSITION_EDITOR_WINDOW_KEY,
   SETTINGS_WINDOW_KEY,
 } from "@/backend/electron-component/electron-components";
 import { SettingsModel } from "@/backend/model/settings-model";

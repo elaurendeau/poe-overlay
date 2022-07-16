@@ -3,13 +3,13 @@ import path from "path";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import {
   electronComponents,
-  OVERLAY_POSITION_EDITOR_WINDOW_KEY,
+  OVERLAY_CAPTURE_POSITION_EDITOR_WINDOW_KEY,
 } from "@/backend/electron-component/electron-components";
-import { updateOverlayPositionCoordinates } from "@/backend/manager/overlay-position-editor-manager";
+import { updateOverlayCapturePositionCoordinates } from "@/backend/manager/overlay-position-editor-manager";
 import { updateOverlayPositionEditorSettings } from "@/backend/ipc/overlay-position-editor-ipc";
 import { getSettings } from "@/backend/manager/settings-manager";
 
-export function createOverlayPositionEditorWindow(): BrowserWindow {
+export function createCaptureOverlayPositionEditorWindow(): BrowserWindow {
   // Create the browser window.
   const primaryDisplay = screen.getPrimaryDisplay();
   const displayWidth = primaryDisplay.size.width;
@@ -37,11 +37,11 @@ export function createOverlayPositionEditorWindow(): BrowserWindow {
     updateOverlayPositionEditorSettings(settings.settingsOverlayPositionEditor);
   });
   overlay.on("resized", () => {
-    updateOverlayPositionCoordinates();
+    updateOverlayCapturePositionCoordinates();
   });
 
   overlay.on("moved", () => {
-    updateOverlayPositionCoordinates();
+    updateOverlayCapturePositionCoordinates();
   });
 
   overlay.webContents.openDevTools({
@@ -51,15 +51,17 @@ export function createOverlayPositionEditorWindow(): BrowserWindow {
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the  dev server if in development mode
     overlay.loadURL(
-      (process.env.WEBPACK_DEV_SERVER_URL as string) + "overlay-position-editor"
+      (process.env.WEBPACK_DEV_SERVER_URL as string) +
+        "overlay-capture-position-editor"
     );
     // if (!process.env.IS_TEST) overlayWindow.webContents.openDevTools();
   } else {
     createProtocol("app");
     // Load the index.html when not in development
-    overlay.loadURL("app://./index.html/overlay-position-editor");
+    overlay.loadURL("app://./index.html/overlay-capture-position-editor");
   }
 
-  electronComponents.windows[OVERLAY_POSITION_EDITOR_WINDOW_KEY] = overlay;
+  electronComponents.windows[OVERLAY_CAPTURE_POSITION_EDITOR_WINDOW_KEY] =
+    overlay;
   return overlay;
 }

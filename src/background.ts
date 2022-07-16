@@ -8,7 +8,8 @@ import "@/backend/ipc/overlay-position-editor-ipc";
 import logger from "@/backend/logger/logger";
 import { createGridWindow } from "@/backend/electron-component/window/grid-window";
 import { createSettingsWindow } from "@/backend/electron-component/window/settings-window";
-import { createOverlayPositionEditorWindow } from "@/backend/electron-component/window/overlay-position-editor-window";
+import { createCaptureOverlayPositionEditorWindow } from "@/backend/electron-component/window/overlay-capture-position-editor-window";
+import { createDisplayOverlayPositionEditorWindow } from "@/backend/electron-component/window/overlay-display-position-editor-window";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -39,7 +40,8 @@ app.on("activate", () => {
 
 app.on("ready", async () => {
   logger.info("Creating overlay and tray");
-  createOverlayPositionEditorWindow();
+  createDisplayOverlayPositionEditorWindow();
+  createCaptureOverlayPositionEditorWindow();
   createOverlayWindow();
   createGridWindow();
   createTray();

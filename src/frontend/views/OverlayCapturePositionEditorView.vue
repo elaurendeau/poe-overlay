@@ -2,7 +2,7 @@
 import Vue from "vue";
 
 export default Vue.extend({
-  name: "OverlayPositionEditorView",
+  name: "OverlayCapturePositionEditorView",
   data() {
     return {
       localCapturePositionEditorColor: "#00F8FF38",
