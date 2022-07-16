@@ -7,6 +7,8 @@ import { SettingsOverlayModel } from "@/backend/model/settings-overlay-model";
 import SettingsOverlayComponent from "@/frontend/views/component/SettingsOverlayComponent.vue";
 import { SettingsOverlayPositionEditorModel } from "@/backend/model/settings-overlay-position-editor-model";
 import SettingsPositionEditorComponent from "@/frontend/views/component/SettingsPositionEditorComponent.vue";
+import SettingsScreenCaptureComponent from "@/frontend/views/component/SettingsScreenCaptureComponent.vue";
+import { SettingsScreenCaptureModel } from "@/backend/model/settings-screen-capture";
 
 export default Vue.extend({
   name: "SettingsView",
@@ -16,17 +18,20 @@ export default Vue.extend({
         settingsGrid: {} as SettingsGridModel,
         settingsOverlay: {} as SettingsOverlayModel,
         settingsOverlayPositionEditor: {} as SettingsOverlayPositionEditorModel,
+        settingsScreenCapture: {} as SettingsScreenCaptureModel,
       } as SettingsModel,
       windowNameArray: [],
       showOverlaySettings: true,
       showGridSettings: false,
       showOverlayPositionEditorSettings: false,
+      showScreenCaptureSettings: false,
       showGrid: false,
       drawer: true,
       mini: true,
     };
   },
   components: {
+    SettingsScreenCaptureComponent,
     SettingsGridComponent,
     SettingsOverlayComponent,
     SettingsPositionEditorComponent,
@@ -49,22 +54,25 @@ export default Vue.extend({
     },
     showSettings(name: string) {
       if (name === "grid") {
+        this.hideAllSettings();
         this.showGridSettings = true;
-        this.showOverlaySettings = false;
-        this.showOverlayPositionEditorSettings = false;
       } else if (name === "overlay") {
-        console.log(`Value show grid settings ${this.showGridSettings}`);
-        console.log(`Value show overlay settings ${this.showOverlaySettings}`);
-        this.showGridSettings = false;
+        this.hideAllSettings();
         this.showOverlaySettings = true;
-        this.showOverlayPositionEditorSettings = false;
       } else if (name === "overlayPositionEditor") {
-        console.log(`Value show grid settings ${this.showGridSettings}`);
-        console.log(`Value show overlay settings ${this.showOverlaySettings}`);
-        this.showGridSettings = false;
-        this.showOverlaySettings = false;
+        this.hideAllSettings();
         this.showOverlayPositionEditorSettings = true;
+      } else if (name === "screenCapture") {
+        this.hideAllSettings();
+        this.showScreenCaptureSettings = true;
       }
+    },
+
+    hideAllSettings() {
+      this.showGridSettings = false;
+      this.showOverlaySettings = false;
+      this.showOverlayPositionEditorSettings = false;
+      this.showScreenCaptureSettings = false;
     },
 
     swapShowComponents() {
@@ -129,6 +137,8 @@ export default Vue.extend({
           "
           v-if="showOverlayPositionEditorSettings"
         />
+
+        <SettingsScreenCaptureComponent v-if="showScreenCaptureSettings" />
       </v-container>
     </v-main>
     <v-navigation-drawer app permanent clipped right style="padding: 15px">
@@ -177,11 +187,21 @@ export default Vue.extend({
 
           <v-list-item @click="showSettings('overlayPositionEditor')">
             <v-list-item-icon>
-              <v-icon>mdi-solar-panel</v-icon>
+              <v-icon>mdi-cursor-move</v-icon>
             </v-list-item-icon>
 
             <v-list-item-content>
               <v-list-item-title>Position Editor</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item @click="showSettings('screenCapture')">
+            <v-list-item-icon>
+              <v-icon>mdi-monitor-eye</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title>Screen Capture</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list>
