@@ -57,8 +57,6 @@ export default Vue.extend({
         this.hideAllSettings();
         this.showGridSettings = true;
       } else if (name === "overlay") {
-        console.log(`Front.ipc -> refresh-settings-window-array`);
-        window.api.send("refresh-settings-window-array");
         this.hideAllSettings();
         this.showOverlaySettings = true;
       } else if (name === "overlayPositionEditor") {
@@ -126,9 +124,7 @@ export default Vue.extend({
         />
 
         <SettingsOverlayComponent
-          :programName.sync="settings.settingsOverlay.programName"
           :overlay-array.sync="settings.settingsOverlay.overlayArray"
-          :window-source-array.sync="windowSourceArray"
           v-if="showOverlaySettings"
         />
 
@@ -143,7 +139,12 @@ export default Vue.extend({
         />
 
         <SettingsScreenCaptureComponent
-          :program-name.sync="settings.settingsScreenCapture.programName"
+          :display-window-name.sync="
+            settings.settingsScreenCapture.displayProgramName
+          "
+          :capture-window-name.sync="
+            settings.settingsScreenCapture.captureProgramName
+          "
           :window-source-array.sync="windowSourceArray"
           v-if="showScreenCaptureSettings"
         />

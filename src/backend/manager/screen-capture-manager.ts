@@ -5,7 +5,8 @@ import { electronComponents } from "@/backend/electron-component/electron-compon
 
 export function createDefaultScreenCaptureSettings(): SettingsScreenCaptureModel {
   return {
-    programName: "Path of Exile",
+    captureProgramName: "Path of Exile",
+    displayProgramName: "Path of Exile",
   } as SettingsScreenCaptureModel;
 }
 

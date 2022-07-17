@@ -4,7 +4,11 @@ import { WindowSourcePropertiesModel } from "@/backend/model/window-source-prope
 export default Vue.extend({
   name: "SettingsScreenCaptureComponent",
   props: {
-    programName: {
+    displayWindowName: {
+      type: String,
+      default: "",
+    },
+    captureWindowName: {
       type: String,
       default: "",
     },
@@ -14,27 +18,52 @@ export default Vue.extend({
     },
   },
   methods: {
-    programNameOnChange() {
-      this.$emit("update:programName", this.localProgramName);
+    changeDisplayWindowName() {
+      console.log(`changeCaptureWindowName ${this.localDisplayWindowName}`);
+
+      this.$emit("update:displayWindowName", this.localDisplayWindowName);
+    },
+    changeCaptureWindowName() {
+      console.log(`changeCaptureWindowName ${this.localCaptureWindowName}`);
+
+      this.$emit("update:captureWindowName", this.localCaptureWindowName);
     },
     async refreshWindowNameArray() {
       console.log(`Front.ipc -> refresh-settings-window-array`);
       window.api.send("refresh-settings-window-array");
       this.windowNameRefreshDegree += 360;
     },
-    async windowNameListOnChange(windowProperties) {
-      this.localProgramName = windowProperties.programName;
-      this.currentWindowSourceProperties = windowProperties;
-      this.programNameOnChange();
+    async changeDisplayWindowArray(windowProperties) {
+      console.log(`changeDisplayWindowArray ${windowProperties}`);
 
-      await this.updateVideoStream(windowProperties);
+      this.localDisplayWindowName = windowProperties.programName;
+      this.currentDisplayWindowProperties = windowProperties;
+      this.changeDisplayWindowName();
+
+      await this.updateVideoStream(
+        windowProperties,
+        "video[id='stream-display']"
+      );
     },
 
-    async updateVideoStream(windowProperties) {
-      const htmlVideoElement = document.querySelector("video");
+    async changeCaptureWindowArray(windowProperties) {
+      console.log(`changeCaptureWindowArray ${windowProperties}`);
+
+      this.localCaptureWindowName = windowProperties.programName;
+      this.currentCaptureWindowProperties = windowProperties;
+      this.changeCaptureWindowName();
+
+      await this.updateVideoStream(
+        windowProperties,
+        "video[id='stream-capture']"
+      );
+    },
+
+    async updateVideoStream(windowProperties, filter) {
+      console.log(`updateVideoStream ${windowProperties} ${filter}`);
+
+      const htmlVideoElement = document.querySelector(filter);
       if (htmlVideoElement) {
-        console.log(`Front.ipc -> stream`);
-        console.log(`--------------- `);
         const stream = await window.api.stream(
           "stream-full-window",
           windowProperties,
@@ -42,20 +71,59 @@ export default Vue.extend({
         );
       }
     },
+    updateCurrentWindowProperties(
+      localWindowName
+    ): WindowSourcePropertiesModel {
+      console.log(`updateVideoStream ${localWindowName}`);
+      if (localWindowName) {
+        console.log("Im in");
+        console.log(`array: ${JSON.stringify(this.localWindowArray)}`);
+        const filteredWindowArray = this.localWindowArray?.filter(
+          (windowSourceProperties: WindowSourcePropertiesModel) => {
+            console.log(
+              `Comparing ${
+                windowSourceProperties.programName
+              } with ${localWindowName} result ${
+                windowSourceProperties.programName === localWindowName
+              }`
+            );
+            return windowSourceProperties.programName === localWindowName;
+          }
+        );
+
+        console.log(`Filtered list ${JSON.stringify(filteredWindowArray)}`);
+        if (filteredWindowArray.length === 1) {
+          return filteredWindowArray[0];
+        }
+      }
+      throw new Error("Unable to find a window match");
+    },
   },
   data() {
     return {
-      localProgramName: this.programName,
+      localDisplayWindowName: this.displayWindowName,
+      localCaptureWindowName: this.captureWindowName,
       localWindowArray: this.windowSourceArray,
-      currentWindowSourceProperties: null as WindowSourcePropertiesModel | null,
+      currentDisplayWindowProperties:
+        null as WindowSourcePropertiesModel | null,
+      currentCaptureWindowProperties:
+        null as WindowSourcePropertiesModel | null,
       windowNameRefreshDegree: 0,
       localStream: null as MediaStream | null,
     };
   },
   watch: {
-    currentWindowSourceProperties(newValue) {
+    currentDisplayWindowProperties(newValue) {
+      console.log(`currentDisplayWindowProperties ${newValue}`);
       if (newValue) {
-        this.updateVideoStream(newValue);
+        this.updateVideoStream(newValue, "video[id='stream-display']");
+      }
+    },
+
+    currentCaptureWindowProperties(newValue) {
+      console.log(`currentCaptureWindowProperties ${newValue}`);
+      if (newValue) {
+        this.updateVideoStream(newValue, "video[id='stream-capture']");
       }
     },
   },
@@ -67,17 +135,16 @@ export default Vue.extend({
 
       this.localWindowArray = data;
 
-      if (!this.currentWindowSourceProperties && this.localProgramName) {
-        const filteredWindowArray = this.localWindowArray?.filter(
-          (windowSourceProperties: WindowSourcePropertiesModel) => {
-            return windowSourceProperties.programName === this.localProgramName;
-          }
-        );
-
-        if (filteredWindowArray.length === 1) {
-          this.currentWindowSourceProperties = filteredWindowArray[0];
-        }
+      if (!this.currentDisplayWindowProperties) {
+        this.currentDisplayWindowProperties =
+          this.updateCurrentWindowProperties(this.localDisplayWindowName);
       }
+
+      if (!this.currentCaptureWindowProperties) {
+        this.currentCaptureWindowProperties =
+          this.updateCurrentWindowProperties(this.localCaptureWindowName);
+      }
+
       this.$forceUpdate;
     });
   },
@@ -88,7 +155,7 @@ export default Vue.extend({
   <v-container id="container">
     <v-row no-gutters class="w-100">
       <v-col>
-        <v-subheader class="pl-0 pb-5">Game Window Name:</v-subheader>
+        <v-subheader class="pl-0 pb-5">Window to display overlay:</v-subheader>
         <v-row>
           <v-flex
             class="d-flex align-stretch"
@@ -96,19 +163,18 @@ export default Vue.extend({
           >
             <v-col cols="6">
               <v-text-field
-                v-model="localProgramName"
+                v-model="localDisplayWindowName"
                 outlined
                 clearable
                 hide-details
-                @change="programNameOnChange"
+                @change="changeDisplayWindowName"
               ></v-text-field>
             </v-col>
             <v-col cols="5">
               <v-select
                 item-text="programName"
                 :items="localWindowArray"
-                :key="localWindowArray"
-                @change="windowNameListOnChange"
+                @change="changeDisplayWindowArray"
                 outlined
                 hide-details
                 return-object
@@ -136,7 +202,61 @@ export default Vue.extend({
     <v-row>
       <v-col>
         <div class="w-100 h-100" style="height: 400px">
-          <video id="stream" class="w-100 h-100" muted autoplay></video>
+          <video id="stream-display" class="w-100 h-100" muted autoplay></video>
+        </div>
+      </v-col>
+    </v-row>
+
+    <v-row no-gutters class="w-100">
+      <v-col>
+        <v-subheader class="pl-0 pb-5">Window to capture overlay:</v-subheader>
+        <v-row>
+          <v-flex
+            class="d-flex align-stretch"
+            style="-webkit-app-region: no-drag"
+          >
+            <v-col cols="6">
+              <v-text-field
+                v-model="localCaptureWindowName"
+                outlined
+                clearable
+                hide-details
+                @change="changeCaptureWindowName"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="5">
+              <v-select
+                item-text="programName"
+                :items="localWindowArray"
+                @change="changeCaptureWindowArray"
+                outlined
+                hide-details
+                return-object
+              >
+              </v-select>
+            </v-col>
+            <v-col
+              cols="1"
+              justify-center
+              class="d-flex align-stretch justify-end clicker"
+              @click="refreshWindowNameArray"
+            >
+              <v-icon
+                class="transition"
+                v-bind:style="{
+                  transform: `rotate(${windowNameRefreshDegree}deg)`,
+                }"
+                >mdi-refresh
+              </v-icon>
+            </v-col>
+          </v-flex>
+        </v-row>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <div class="w-100 h-100" style="height: 200px">
+          <video id="stream-capture" class="w-100 h-100" muted autoplay></video>
         </div>
       </v-col>
     </v-row>

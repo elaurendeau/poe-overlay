@@ -9,14 +9,6 @@ import { WindowSourcePropertiesModel } from "@/backend/model/window-source-prope
 export default Vue.extend({
   name: "SettingsOverlayComponent",
   props: {
-    programName: {
-      type: String,
-      default: "",
-    },
-    windowSourceArray: {
-      type: Array as PropType<Array<WindowSourcePropertiesModel>>,
-      default: () => [],
-    },
     overlayArray: {
       type: Array as PropType<OverlayModel[]>,
       default: () => [],
@@ -24,7 +16,6 @@ export default Vue.extend({
   },
   components: {
     ConfirmDialogComponent,
-    // eslint-disable-next-line vue/no-unused-components
     SettingsOverlayEditComponent,
   },
   methods: {
@@ -33,18 +24,6 @@ export default Vue.extend({
       window.api.send("hide-overlay-position-editor");
     },
 
-    programNameOnChange() {
-      this.$emit("update:programName", this.localProgramName);
-    },
-    async refreshWindowNameArray() {
-      console.log(`Front.ipc -> refresh-settings-window-array`);
-      window.api.send("refresh-settings-window-array");
-      this.windowNameRefreshDegree += 360;
-    },
-    windowNameListOnChange(value) {
-      this.localProgramName = value.programName;
-      this.programNameOnChange();
-    },
     createNewOverlay() {
       this.localOverlayArray?.push({
         id: uuidv4(),
@@ -100,10 +79,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      localProgramName: this.programName,
-      localWindowArray: this.windowSourceArray,
       localOverlayArray: this.overlayArray,
-      windowNameRefreshDegree: 0,
       displayConfirmDialog: false,
       displayEditDialog: false,
       currentOverlayBuffer: null,
@@ -119,68 +95,11 @@ export default Vue.extend({
       ],
     };
   },
-  mounted() {
-    window.api.receive("update-settings-window-list", (event, data) => {
-      console.log(
-        `SettingsOverlay -> Back.ipc -> update-settings-window-list '${JSON.stringify(
-          data
-        )}'`
-      );
-
-      this.localWindowArray = data;
-      this.$forceUpdate;
-    });
-  },
 });
 </script>
 
 <template>
   <v-container id="container">
-    <v-row no-gutters class="w-100">
-      <v-col>
-        <v-subheader class="pl-0 pb-5">Game Window Name:</v-subheader>
-        <v-row>
-          <v-flex
-            class="d-flex align-stretch"
-            style="-webkit-app-region: no-drag"
-          >
-            <v-col cols="6">
-              <v-text-field
-                v-model="localProgramName"
-                outlined
-                clearable
-                hide-details
-                @change="programNameOnChange"
-              ></v-text-field>
-            </v-col>
-            <v-col cols="5">
-              <v-select
-                item-text="programName"
-                :items="localWindowArray"
-                @change="windowNameListOnChange"
-                outlined
-                hide-details
-                return-object
-              ></v-select>
-            </v-col>
-            <v-col
-              cols="1"
-              justify-center
-              class="d-flex align-stretch justify-end clicker"
-              @click="refreshWindowNameArray"
-            >
-              <v-icon
-                class="transition"
-                v-bind:style="{
-                  transform: `rotate(${windowNameRefreshDegree}deg)`,
-                }"
-                >mdi-refresh
-              </v-icon>
-            </v-col>
-          </v-flex>
-        </v-row>
-      </v-col>
-    </v-row>
     <v-row no-gutters class="w-100 mt-5">
       <v-col>
         <v-subheader class="pl-0 pb-5">Overlays:</v-subheader>
