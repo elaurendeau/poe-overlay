@@ -6,10 +6,8 @@ import {
   SETTINGS_WINDOW_KEY,
 } from "@/backend/electron-component/electron-components";
 import { getSettings, readSettings } from "@/backend/manager/settings-manager";
-import {
-  updateSettingsWindow,
-  updateSettingsWindowList,
-} from "@/backend/ipc/settings-ipc";
+import { updateSettingsWindow } from "@/backend/ipc/settings-ipc";
+import { sendScreenCaptureWindowList } from "@/backend/manager/screen-capture-manager";
 
 export function createSettingsWindow(): BrowserWindow {
   const settingsWindow = new BrowserWindow({
@@ -36,11 +34,7 @@ export function createSettingsWindow(): BrowserWindow {
     const settings = getSettings();
     updateSettingsWindow(settings);
 
-    desktopCapturer
-      .getSources({ types: ["window", "screen"] })
-      .then(async (sources) => {
-        updateSettingsWindowList(sources.map((source) => source.name));
-      });
+    sendScreenCaptureWindowList();
   });
   settingsWindow.webContents.openDevTools({
     mode: "detach",

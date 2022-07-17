@@ -10,6 +10,7 @@ import { createGridWindow } from "@/backend/electron-component/window/grid-windo
 import { createSettingsWindow } from "@/backend/electron-component/window/settings-window";
 import { createCaptureOverlayPositionEditorWindow } from "@/backend/electron-component/window/overlay-capture-position-editor-window";
 import { createDisplayOverlayPositionEditorWindow } from "@/backend/electron-component/window/overlay-display-position-editor-window";
+import { WindowSourcePropertiesModel } from "@/backend/model/window-source-properties-model";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -18,6 +19,11 @@ declare global {
     api: {
       send: (channel: string, ...arg: any) => void;
       receive: (channel: string, ...arg: any) => void;
+      stream: (
+        channel: string,
+        windowProperties: WindowSourcePropertiesModel,
+        htmlVideoElement: HTMLVideoElement
+      ) => void;
     };
   }
 }

@@ -122,7 +122,9 @@ export default Vue.extend({
   mounted() {
     window.api.receive("update-settings-window-list", (event, data) => {
       console.log(
-        `Back.ipc -> update-settings-window-list '${JSON.stringify(data)}'`
+        `SettingsOverlay -> Back.ipc -> update-settings-window-list '${JSON.stringify(
+          data
+        )}'`
       );
 
       this.localWindowArray = data;
@@ -148,6 +150,7 @@ export default Vue.extend({
                 outlined
                 clearable
                 hide-details
+                @change="programNameOnChange"
               ></v-text-field>
             </v-col>
             <v-col cols="5">

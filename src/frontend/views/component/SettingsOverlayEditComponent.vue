@@ -31,6 +31,20 @@ export default Vue.extend({
     };
   },
   methods: {
+    init() {
+      this.localCaptureRectangle = {
+        startX: this.$props.overlay.captureRectangle.startX,
+        startY: this.$props.overlay.captureRectangle.startY,
+        endX: this.$props.overlay.captureRectangle.endX,
+        endY: this.$props.overlay.captureRectangle.endY,
+      } as RectangleModel;
+      this.localDisplayRectangle = {
+        startX: this.$props.overlay.displayRectangle.startX,
+        startY: this.$props.overlay.displayRectangle.startY,
+        endX: this.$props.overlay.displayRectangle.endX,
+        endY: this.$props.overlay.displayRectangle.endY,
+      } as RectangleModel;
+    },
     cancel() {
       this.$emit("cancel-dialog");
     },
@@ -39,6 +53,7 @@ export default Vue.extend({
       this.localOverlay.displayRectangle = this.localDisplayRectangle;
       Object.assign(this.overlay, this.localOverlay);
       this.$emit("save-dialog", this.overlay);
+      this.init();
     },
     toggleOverlayCapturePositionEditor() {
       console.log("Front.ipc -> toggle-overlay-capture-position-editor");

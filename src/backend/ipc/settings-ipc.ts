@@ -12,6 +12,7 @@ import {
   writeSettings,
 } from "@/backend/manager/settings-manager";
 import { WindowSourcePropertiesModel } from "@/backend/model/window-source-properties-model";
+import { sendScreenCaptureWindowList } from "@/backend/manager/screen-capture-manager";
 
 export const hideSettings = ipcMain.on("hide-settings", async (event, args) => {
   logger.debug("IpcMain.receive -> hide-settings");
@@ -24,19 +25,7 @@ export const refreshWindowNameArray = ipcMain.on(
   async (event, args) => {
     logger.debug("IpcMain.receive -> refresh-settings-window-array");
 
-    desktopCapturer
-      .getSources({ types: ["window", "screen"] })
-      .then(async (sources) => {
-        event.reply(
-          "update-settings-window-list",
-          sources.map((source) => {
-            return {
-              programName: source.name,
-              programId: source.id,
-            } as WindowSourcePropertiesModel;
-          })
-        );
-      });
+    sendScreenCaptureWindowList();
   }
 );
 export const saveSettings = ipcMain.on(
@@ -62,17 +51,8 @@ export function updateSettingsWindow(settings: SettingsModel) {
     `SettingsWindow.send -> update-settings: ${JSON.stringify(settings)}`
   );
 
-  const window = electronComponents.windows["SETTING_WINDOW"];
-  window.webContents.send("update-settings", settings);
-}
-
-export function updateSettingsWindowList(windowList: Array<string>) {
-  logger.debug(
-    `SettingsWindow.send -> update-settings-window-list: ${JSON.stringify(
-      windowList
-    )}`
+  electronComponents.windows["SETTING_WINDOW"].webContents.send(
+    "update-settings",
+    settings
   );
-
-  const window = electronComponents.windows["SETTING_WINDOW"];
-  window.webContents.send("update-settings-window-list", windowList);
 }

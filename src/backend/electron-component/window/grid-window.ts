@@ -36,9 +36,9 @@ export function createGridWindow(): BrowserWindow {
     const settings = getSettings();
     updateGridWindowSettings(settings.settingsGrid);
   });
-  gridWindow.webContents.openDevTools({
-    mode: "detach",
-  });
+  // gridWindow.webContents.openDevTools({
+  //   mode: "detach",
+  // });
 
   gridWindow.setIgnoreMouseEvents(true);
 

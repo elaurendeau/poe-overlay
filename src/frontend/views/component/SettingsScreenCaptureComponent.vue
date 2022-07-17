@@ -22,28 +22,62 @@ export default Vue.extend({
       window.api.send("refresh-settings-window-array");
       this.windowNameRefreshDegree += 360;
     },
-    windowNameListOnChange(value) {
-      console.log("---------------------");
-      console.log(JSON.stringify(value));
-      this.localProgramName = value.programName;
+    async windowNameListOnChange(windowProperties) {
+      this.localProgramName = windowProperties.programName;
+      this.currentWindowSourceProperties = windowProperties;
       this.programNameOnChange();
+
+      await this.updateVideoStream(windowProperties);
+    },
+
+    async updateVideoStream(windowProperties) {
+      const htmlVideoElement = document.querySelector("video");
+      if (htmlVideoElement) {
+        console.log(`Front.ipc -> stream`);
+        console.log(`--------------- `);
+        const stream = await window.api.stream(
+          "stream-full-window",
+          windowProperties,
+          htmlVideoElement
+        );
+      }
     },
   },
   data() {
     return {
       localProgramName: this.programName,
       localWindowArray: this.windowSourceArray,
+      currentWindowSourceProperties: null as WindowSourcePropertiesModel | null,
       windowNameRefreshDegree: 0,
+      localStream: null as MediaStream | null,
     };
   },
-  watch: {},
+  watch: {
+    currentWindowSourceProperties(newValue) {
+      if (newValue) {
+        this.updateVideoStream(newValue);
+      }
+    },
+  },
   mounted() {
     window.api.receive("update-settings-window-list", (event, data) => {
       console.log(
-        `Back.ipc -> update-settings-window-list '${JSON.stringify(data)}'`
+        `SettingsScreenCapture -> Back.ipc -> update-settings-window-list '${data}'`
       );
 
       this.localWindowArray = data;
+
+      if (!this.currentWindowSourceProperties && this.localProgramName) {
+        const filteredWindowArray = this.localWindowArray?.filter(
+          (windowSourceProperties: WindowSourcePropertiesModel) => {
+            return windowSourceProperties.programName === this.localProgramName;
+          }
+        );
+
+        if (filteredWindowArray.length === 1) {
+          this.currentWindowSourceProperties = filteredWindowArray[0];
+        }
+      }
       this.$forceUpdate;
     });
   },
@@ -66,12 +100,14 @@ export default Vue.extend({
                 outlined
                 clearable
                 hide-details
+                @change="programNameOnChange"
               ></v-text-field>
             </v-col>
             <v-col cols="5">
               <v-select
                 item-text="programName"
                 :items="localWindowArray"
+                :key="localWindowArray"
                 @change="windowNameListOnChange"
                 outlined
                 hide-details
@@ -95,6 +131,13 @@ export default Vue.extend({
             </v-col>
           </v-flex>
         </v-row>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <div class="w-100 h-100" style="height: 400px">
+          <video id="stream" class="w-100 h-100" muted autoplay></video>
+        </div>
       </v-col>
     </v-row>
   </v-container>
