@@ -15,56 +15,50 @@ import { WindowSourcePropertiesModel } from "@/backend/model/window-source-prope
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 declare global {
-  interface Window {
-    api: {
-      send: (channel: string, ...arg: any) => void;
-      receive: (channel: string, ...arg: any) => void;
-      stream: (
-        channel: string,
-        windowProperties: WindowSourcePropertiesModel,
-        htmlVideoElement: HTMLVideoElement
-      ) => void;
-    };
-  }
+    interface Window {
+        api: {
+            send: (channel: string, ...arg: any) => void;
+            receive: (channel: string, ...arg: any) => void;
+            stream: (channel: string, windowProperties: WindowSourcePropertiesModel, htmlVideoElement: HTMLVideoElement) => void;
+        };
+    }
 }
 
-protocol.registerSchemesAsPrivileged([
-  { scheme: "app", privileges: { secure: true, standard: true } },
-]);
+protocol.registerSchemesAsPrivileged([{ scheme: "app", privileges: { secure: true, standard: true } }]);
 
 app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
+    if (process.platform !== "darwin") {
+        app.quit();
+    }
 });
 
 app.on("activate", () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createOverlayWindow();
-  }
+    if (BrowserWindow.getAllWindows().length === 0) {
+        createOverlayWindow();
+    }
 });
 
 app.on("ready", async () => {
-  logger.info("Creating overlay and tray");
-  createDisplayOverlayPositionEditorWindow();
-  createCaptureOverlayPositionEditorWindow();
-  createOverlayWindow();
-  createGridWindow();
-  createTray();
-  createSettingsWindow();
+    logger.info("Creating overlay and tray");
+    createDisplayOverlayPositionEditorWindow();
+    createCaptureOverlayPositionEditorWindow();
+    createOverlayWindow();
+    createGridWindow();
+    createTray();
+    createSettingsWindow();
 });
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
-  if (process.platform === "win32") {
-    process.on("message", (data) => {
-      if (data === "graceful-exit") {
-        app.quit();
-      }
-    });
-  } else {
-    process.on("SIGTERM", () => {
-      app.quit();
-    });
-  }
+    if (process.platform === "win32") {
+        process.on("message", (data) => {
+            if (data === "graceful-exit") {
+                app.quit();
+            }
+        });
+    } else {
+        process.on("SIGTERM", () => {
+            app.quit();
+        });
+    }
 }

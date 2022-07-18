@@ -1,4 +1,4 @@
 export interface SettingsOverlayPositionEditorModel {
-  capturePositionEditorColor: string;
-  displayPositionEditorColor: string;
+    capturePositionEditorColor: string;
+    displayPositionEditorColor: string;
 }

@@ -1,4 +1,4 @@
 export interface SettingsScreenCaptureModel {
-  displayProgramName: string;
-  captureProgramName: string;
+    displayProgramName: string;
+    captureProgramName: string;
 }

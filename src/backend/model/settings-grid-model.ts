@@ -1,6 +1,6 @@
 export interface SettingsGridModel {
-  rowCount: number;
-  columnCount: number;
-  displayCenterLines: boolean;
-  color: string;
+    rowCount: number;
+    columnCount: number;
+    displayCenterLines: boolean;
+    color: string;
 }

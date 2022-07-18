@@ -17,48 +17,47 @@ const SETTINGS_FILE_PATH = path.join(userDataPath, "settings.json");
 let currentSettings: SettingsModel;
 
 export function getSettings(): SettingsModel {
-  if (!currentSettings) {
-    currentSettings = readSettings();
-  }
-  return currentSettings;
+    if (!currentSettings) {
+        currentSettings = readSettings();
+    }
+    return currentSettings;
 }
 
 export function writeSettings(settings: SettingsModel) {
-  currentSettings = settings;
-  logger.debug(`Writing settings data to ${SETTINGS_FILE_PATH}`);
-  fs.writeFileSync(SETTINGS_FILE_PATH, JSON.stringify(settings, null, 2));
+    currentSettings = settings;
+    logger.debug(`Writing settings data to ${SETTINGS_FILE_PATH}`);
+    fs.writeFileSync(SETTINGS_FILE_PATH, JSON.stringify(settings, null, 2));
 }
 
 export function readSettings(): SettingsModel {
-  logger.debug(`Reading settings data from ${SETTINGS_FILE_PATH}`);
+    logger.debug(`Reading settings data from ${SETTINGS_FILE_PATH}`);
 
-  try {
-    const settingsRawData = fs.readFileSync(SETTINGS_FILE_PATH, "utf-8");
+    try {
+        const settingsRawData = fs.readFileSync(SETTINGS_FILE_PATH, "utf-8");
 
-    return JSON.parse(settingsRawData);
-  } catch (e) {
-    if (e instanceof Error) {
-      logger.error(`Unable to open or parse settings. ${e.message}`);
-    } else {
-      logger.error(`Unable to open or parse settings. ${e}`);
+        return JSON.parse(settingsRawData);
+    } catch (e) {
+        if (e instanceof Error) {
+            logger.error(`Unable to open or parse settings. ${e.message}`);
+        } else {
+            logger.error(`Unable to open or parse settings. ${e}`);
+        }
+
+        return createDefaultSettings();
     }
-
-    return createDefaultSettings();
-  }
 }
 
 export function createDefaultSettings(): SettingsModel {
-  return {
-    settingsGrid: createDefaultGridSettings(),
-    settingsOverlay: createDefaultOverlaySettings(),
-    settingsOverlayPositionEditor:
-      createDefaultSettingsOverlayPositionEditorSettings(),
-    settingsScreenCapture: createDefaultScreenCaptureSettings(),
-  } as SettingsModel;
+    return {
+        settingsGrid: createDefaultGridSettings(),
+        settingsOverlay: createDefaultOverlaySettings(),
+        settingsOverlayPositionEditor: createDefaultSettingsOverlayPositionEditorSettings(),
+        settingsScreenCapture: createDefaultScreenCaptureSettings(),
+    } as SettingsModel;
 }
 
 export function updateAllSettings(settings: SettingsModel) {
-  updateSettingsWindow(settings);
-  updateGridWindowSettings(settings.settingsGrid);
-  updateOverlayPositionEditorSettings(settings.settingsOverlayPositionEditor);
+    updateSettingsWindow(settings);
+    updateGridWindowSettings(settings.settingsGrid);
+    updateOverlayPositionEditorSettings(settings.settingsOverlayPositionEditor);
 }

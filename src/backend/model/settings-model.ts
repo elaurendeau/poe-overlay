@@ -4,8 +4,8 @@ import { SettingsOverlayPositionEditorModel } from "@/backend/model/settings-ove
 import { SettingsScreenCaptureModel } from "@/backend/model/settings-screen-capture";
 
 export interface SettingsModel {
-  settingsGrid: SettingsGridModel;
-  settingsOverlay: SettingsOverlayModel;
-  settingsOverlayPositionEditor: SettingsOverlayPositionEditorModel;
-  settingsScreenCapture: SettingsScreenCaptureModel;
+    settingsGrid: SettingsGridModel;
+    settingsOverlay: SettingsOverlayModel;
+    settingsOverlayPositionEditor: SettingsOverlayPositionEditorModel;
+    settingsScreenCapture: SettingsScreenCaptureModel;
 }
