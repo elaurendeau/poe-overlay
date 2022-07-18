@@ -2,6 +2,10 @@ import { BrowserWindow, screen } from "electron";
 import path from "path";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import { electronComponents, OVERLAY_WINDOW_KEY } from "@/backend/electron-component/electron-components";
+import { getSettings } from "@/backend/manager/settings-manager";
+import { updateSettingsWindow } from "@/backend/ipc/settings-ipc";
+import { sendScreenCaptureWindowList } from "@/backend/manager/screen-capture-manager";
+import { updateOverlayWindow } from "@/backend/ipc/overlay-ipc";
 
 export function createOverlayWindow(): BrowserWindow {
     const primaryDisplay = screen.getPrimaryDisplay();
@@ -23,6 +27,14 @@ export function createOverlayWindow(): BrowserWindow {
             contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
             preload: path.join(__dirname, "preload.js"),
         },
+    });
+
+    overlayWindow.on("ready-to-show", () => {
+        const settings = getSettings();
+        updateOverlayWindow(settings);
+    });
+    overlayWindow.webContents.openDevTools({
+        mode: "detach",
     });
 
     overlayWindow.setIgnoreMouseEvents(true);

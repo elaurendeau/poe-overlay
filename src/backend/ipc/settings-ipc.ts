@@ -1,11 +1,10 @@
-import { desktopCapturer, ipcMain } from "electron";
+import { ipcMain } from "electron";
 import logger from "@/backend/logger/logger";
 import { electronComponents, SETTINGS_WINDOW_KEY } from "@/backend/electron-component/electron-components";
 import { SettingsModel } from "@/backend/model/settings-model";
 import { validateGridSettings } from "@/backend/manager/grid-manager";
 
 import { updateAllSettings, writeSettings } from "@/backend/manager/settings-manager";
-import { WindowSourcePropertiesModel } from "@/backend/model/window-source-properties-model";
 import { sendScreenCaptureWindowList } from "@/backend/manager/screen-capture-manager";
 
 export const hideSettings = ipcMain.on("hide-settings", async (event, args) => {
@@ -35,5 +34,5 @@ export const saveSettings = ipcMain.on("save-settings", async (event, settings: 
 export function updateSettingsWindow(settings: SettingsModel) {
     logger.debug(`SettingsWindow.send -> update-settings: ${JSON.stringify(settings)}`);
 
-    electronComponents.windows["SETTING_WINDOW"].webContents.send("update-settings", settings);
+    electronComponents.windows[SETTINGS_WINDOW_KEY].webContents.send("update-settings", settings);
 }

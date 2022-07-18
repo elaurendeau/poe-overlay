@@ -7,7 +7,6 @@ import { SettingsOverlayModel } from "@/backend/model/settings-overlay-model";
 import SettingsOverlayComponent from "@/frontend/views/component/SettingsOverlayComponent.vue";
 import { SettingsOverlayPositionEditorModel } from "@/backend/model/settings-overlay-position-editor-model";
 import SettingsPositionEditorComponent from "@/frontend/views/component/SettingsPositionEditorComponent.vue";
-import SettingsScreenCaptureComponent from "@/frontend/views/component/SettingsScreenCaptureComponent.vue";
 import { SettingsScreenCaptureModel } from "@/backend/model/settings-screen-capture";
 import SettingsScreenCaptureSlotComponent from "@/frontend/views/component/SettingsScreenCaptureComponent.vue";
 
