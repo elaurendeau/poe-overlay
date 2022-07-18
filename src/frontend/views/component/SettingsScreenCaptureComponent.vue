@@ -50,15 +50,8 @@ export default Vue.extend({
         updateCurrentWindowProperties(localWindowName): WindowSourcePropertiesModel {
             console.log(`updateVideoStream ${localWindowName}`);
             if (localWindowName) {
-                console.log("Im in");
-                console.log(`array: ${JSON.stringify(this.localWindowArray)}`);
                 const filteredWindowArray = this.localWindowArray?.filter(
                     (windowSourceProperties: WindowSourcePropertiesModel) => {
-                        console.log(
-                            `Comparing ${windowSourceProperties.programName} with ${localWindowName} result ${
-                                windowSourceProperties.programName === localWindowName
-                            }`
-                        );
                         return windowSourceProperties.programName === localWindowName;
                     }
                 );
@@ -94,7 +87,6 @@ export default Vue.extend({
 
             this.localWindowArray = data;
 
-            console.log(`HELLLOOOOOOOOOOOOOOOOO ${this.streamElementName}`);
             if (!this.currentWindowProperties) {
                 this.currentWindowProperties = this.updateCurrentWindowProperties(this.localWindowName);
             }
