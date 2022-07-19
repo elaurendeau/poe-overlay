@@ -3,9 +3,9 @@ import path from "path";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import { electronComponents, OVERLAY_WINDOW_KEY } from "@/backend/electron-component/electron-components";
 import { getSettings } from "@/backend/manager/settings-manager";
-import { updateSettingsWindow } from "@/backend/ipc/settings-ipc";
-import { sendScreenCaptureWindowList } from "@/backend/manager/screen-capture-manager";
+import { getWindowPropertiesList } from "@/backend/manager/window-properties-manager";
 import { updateOverlayWindow } from "@/backend/ipc/overlay-ipc";
+import { sendWindowPropertiesArray } from "@/backend/ipc/window-properties-ipc";
 
 export function createOverlayWindow(): BrowserWindow {
     const primaryDisplay = screen.getPrimaryDisplay();
@@ -29,10 +29,11 @@ export function createOverlayWindow(): BrowserWindow {
         },
     });
 
-    overlayWindow.on("ready-to-show", () => {
-        const settings = getSettings();
-        updateOverlayWindow(settings);
+    overlayWindow.on("ready-to-show", async () => {
+        sendWindowPropertiesArray(await getWindowPropertiesList(), OVERLAY_WINDOW_KEY);
+        updateOverlayWindow(getSettings());
     });
+
     overlayWindow.webContents.openDevTools({
         mode: "detach",
     });

@@ -4,7 +4,6 @@ import { OverlayModel } from "@/backend/model/overlay-model";
 import { v4 as uuidv4 } from "uuid";
 import ConfirmDialogComponent from "@/frontend/views/component/ConfirmDialogComponent.vue";
 import SettingsOverlayEditComponent from "@/frontend/views/component/SettingsOverlayEditComponent.vue";
-import { WindowSourcePropertiesModel } from "@/backend/model/window-source-properties-model";
 
 export default Vue.extend({
     name: "SettingsOverlayComponent",

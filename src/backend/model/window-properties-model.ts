@@ -1,4 +1,4 @@
-export interface WindowSourcePropertiesModel {
+export interface WindowPropertiesModel {
     programName: string;
     programId: string;
 }

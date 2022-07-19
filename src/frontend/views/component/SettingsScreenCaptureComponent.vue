@@ -1,6 +1,6 @@
 <script lang="ts">
 import Vue, { PropType } from "vue";
-import { WindowSourcePropertiesModel } from "@/backend/model/window-source-properties-model";
+import { WindowPropertiesModel } from "@/backend/model/window-properties-model";
 
 export default Vue.extend({
     name: "SettingsScreenCaptureSlotComponent",
@@ -9,8 +9,8 @@ export default Vue.extend({
             type: String,
             default: "",
         },
-        windowSourceArray: {
-            type: Array as PropType<Array<WindowSourcePropertiesModel>>,
+        windowPropertiesArray: {
+            type: Array as PropType<Array<WindowPropertiesModel>>,
             default: () => [],
         },
         streamElementName: {
@@ -47,11 +47,11 @@ export default Vue.extend({
                 const stream = await window.api.stream("stream-full-window", windowProperties, htmlVideoElement);
             }
         },
-        updateCurrentWindowProperties(localWindowName): WindowSourcePropertiesModel {
+        updateCurrentWindowProperties(localWindowName): WindowPropertiesModel {
             console.log(`updateVideoStream ${localWindowName}`);
             if (localWindowName) {
                 const filteredWindowArray = this.localWindowArray?.filter(
-                    (windowSourceProperties: WindowSourcePropertiesModel) => {
+                    (windowSourceProperties: WindowPropertiesModel) => {
                         return windowSourceProperties.programName === localWindowName;
                     }
                 );
@@ -67,8 +67,8 @@ export default Vue.extend({
     data() {
         return {
             localWindowName: this.windowName,
-            localWindowArray: this.windowSourceArray,
-            currentWindowProperties: null as WindowSourcePropertiesModel | null,
+            localWindowArray: this.windowPropertiesArray,
+            currentWindowProperties: null as WindowPropertiesModel | null,
             windowNameRefreshDegree: 0,
             localStream: null as MediaStream | null,
         };
@@ -82,8 +82,8 @@ export default Vue.extend({
         },
     },
     mounted() {
-        window.api.receive("update-settings-window-list", (event, data) => {
-            console.log(`SettingsScreenCapture -> Back.ipc -> update-settings-window-list '${JSON.stringify(data)}'`);
+        window.api.receive("update-window-list", (event, data) => {
+            console.log(`SettingsScreenCapture -> Back.ipc -> update-window-list '${JSON.stringify(data)}'`);
 
             this.localWindowArray = data;
 

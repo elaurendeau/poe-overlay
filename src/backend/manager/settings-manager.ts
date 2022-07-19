@@ -9,7 +9,7 @@ import { createDefaultSettingsOverlayPositionEditorSettings } from "@/backend/ma
 import { updateGridWindowSettings } from "@/backend/ipc/grid-ipc";
 import { updateOverlayPositionEditorSettings } from "@/backend/ipc/overlay-position-editor-ipc";
 import { updateSettingsWindow } from "@/backend/ipc/settings-ipc";
-import { createDefaultScreenCaptureSettings } from "@/backend/manager/screen-capture-manager";
+import { createDefaultScreenCaptureSettings } from "@/backend/manager/window-properties-manager";
 import { updateOverlayWindow } from "@/backend/ipc/overlay-ipc";
 
 const userDataPath = (electron.app || electron.remote.app).getPath("userData");
