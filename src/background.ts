@@ -20,8 +20,9 @@ declare global {
         api: {
             send: (channel: string, ...arg: any) => void;
             receive: (channel: string, ...arg: any) => void;
+            invoke: (channel: string, ...arg: any) => Promise<any>;
             stream: (channel: string, windowProperties: WindowPropertiesModel, htmlVideoElement: HTMLVideoElement) => void;
-            overlayStream: (channel: string, windowSourceProperties: WindowPropertiesModel, windowProperties: OverlayModel[], htmlCanvasElement: HTMLCanvasElement) => void;
+            overlayStream: (channel: string, windowSourceProperties: WindowPropertiesModel, windowProperties: OverlayModel[], htmlCanvasElement: HTMLCanvasElement, ...arg: any) => void;
         };
     }
 }

@@ -61,8 +61,6 @@ export default Vue.extend({
                 this.hideAllSettings();
                 this.showOverlayPositionEditorSettings = true;
             } else if (name === "screenCapture") {
-                console.log(`Front.ipc -> refresh-settings-window-array`);
-                window.api.send("refresh-settings-window-array");
                 this.hideAllSettings();
                 this.showScreenCaptureSettings = true;
             }
@@ -82,7 +80,7 @@ export default Vue.extend({
     },
     mounted() {
         window.api.receive("update-settings", (event, data) => {
-            console.log(`Back.ipc -> update-settings '${JSON.stringify(data)}'`);
+            console.log(`SettingsView.receive -> update-settings '${JSON.stringify(data)}'`);
 
             this.settings = data;
             this.swapShowComponents();
@@ -93,6 +91,12 @@ export default Vue.extend({
             });
 
             this.$forceUpdate;
+        });
+
+        window.api.receive("update-window-list", (event, data) => {
+            console.log(`SettingsView.receive -> update-window-list '${JSON.stringify(data)}'`);
+
+            this.windowPropertiesArray = data;
         });
     },
 });
@@ -130,7 +134,7 @@ export default Vue.extend({
 
                 <SettingsScreenCaptureSlotComponent
                     :window-name.sync="settings.settingsScreenCapture.captureProgramName"
-                    :window-source-array="windowSourceArray"
+                    :window-source-array="windowPropertiesArray"
                     :stream-element-name="'stream-capture'"
                     v-if="showScreenCaptureSettings"
                 >
@@ -139,7 +143,7 @@ export default Vue.extend({
 
                 <SettingsScreenCaptureSlotComponent
                     :window-name.sync="settings.settingsScreenCapture.displayProgramName"
-                    :window-source-array="windowSourceArray"
+                    :window-source-array="windowPropertiesArray"
                     :stream-element-name="'stream-display'"
                     v-if="showScreenCaptureSettings"
                 >

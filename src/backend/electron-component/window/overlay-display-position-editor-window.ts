@@ -28,7 +28,7 @@ export function createDisplayOverlayPositionEditorWindow(): BrowserWindow {
             preload: path.join(__dirname, "preload.js"),
         },
     });
-    overlay.on("ready-to-show", () => {
+    overlay.once("ready-to-show", () => {
         const settings = getSettings();
         updateOverlayPositionEditorSettings(settings.settingsOverlayPositionEditor);
     });

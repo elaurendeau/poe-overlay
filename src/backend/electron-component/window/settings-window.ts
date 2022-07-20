@@ -6,6 +6,7 @@ import { getSettings } from "@/backend/manager/settings-manager";
 import { updateSettingsWindow } from "@/backend/ipc/settings-ipc";
 import { getWindowPropertiesList } from "@/backend/manager/window-properties-manager";
 import { sendWindowPropertiesArray } from "@/backend/ipc/window-properties-ipc";
+import logger from "@/backend/logger/logger";
 
 export function createSettingsWindow(): BrowserWindow {
     const settingsWindow = new BrowserWindow({
@@ -28,8 +29,9 @@ export function createSettingsWindow(): BrowserWindow {
         },
     });
     settingsWindow.on("ready-to-show", async () => {
+        logger.debug("Ready to show settings");
         const settings = getSettings();
-        updateSettingsWindow(settings);
+        updateSettingsWindow(settings, SETTINGS_WINDOW_KEY);
         sendWindowPropertiesArray(await getWindowPropertiesList(), SETTINGS_WINDOW_KEY);
     });
     settingsWindow.webContents.openDevTools({

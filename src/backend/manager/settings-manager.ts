@@ -10,7 +10,7 @@ import { updateGridWindowSettings } from "@/backend/ipc/grid-ipc";
 import { updateOverlayPositionEditorSettings } from "@/backend/ipc/overlay-position-editor-ipc";
 import { updateSettingsWindow } from "@/backend/ipc/settings-ipc";
 import { createDefaultScreenCaptureSettings } from "@/backend/manager/window-properties-manager";
-import { updateOverlayWindow } from "@/backend/ipc/overlay-ipc";
+import { OVERLAY_WINDOW_KEY, SETTINGS_WINDOW_KEY } from "@/backend/electron-component/electron-components";
 
 const userDataPath = (electron.app || electron.remote.app).getPath("userData");
 const SETTINGS_FILE_PATH = path.join(userDataPath, "settings.json");
@@ -58,8 +58,8 @@ export function createDefaultSettings(): SettingsModel {
 }
 
 export function updateAllSettings(settings: SettingsModel) {
-    updateSettingsWindow(settings);
+    updateSettingsWindow(settings, SETTINGS_WINDOW_KEY);
+    updateSettingsWindow(settings, OVERLAY_WINDOW_KEY);
     updateGridWindowSettings(settings.settingsGrid);
     updateOverlayPositionEditorSettings(settings.settingsOverlayPositionEditor);
-    updateOverlayWindow(settings);
 }

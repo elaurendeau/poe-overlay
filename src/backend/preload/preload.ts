@@ -8,7 +8,7 @@ import { OverlayModel } from "@/backend/model/overlay-model";
 contextBridge.exposeInMainWorld("api", {
     send: (channel, data) => {
         // whitelist channels
-        logger.debug(`IpcBridge.front -> ${channel}`);
+        logger.debug(`Preload.send -> ${channel}`);
         const validChannels = [
             "hide-settings",
             "toggle-grid",
@@ -20,16 +20,25 @@ contextBridge.exposeInMainWorld("api", {
             "request-stream-full-window",
         ];
         if (validChannels.includes(channel)) {
-            logger.debug(`IpcBridge.front -> ${channel} whitelisted`);
+            logger.debug(`Preload.send -> ${channel} whitelisted`);
             ipcRenderer.send(channel, data);
         }
     },
+    invoke: (channel, data) => {
+        const validChannels = ["refresh-window-list"];
+        logger.debug(`Preload.invoke -> ${channel}`);
 
-    receive: (channel, callback) => {
-        const validChannels = ["update-grid-settings", "update-settings", "update-window-list", "resize-overlay-display-position-editor", "resize-overlay-capture-position-editor", "change-settings-overlay-position-editor"];
-        logger.debug(`IpcBridge.back -> ${channel}`);
         if (validChannels.includes(channel)) {
-            logger.debug(`IpcBridge.back -> ${channel} whitelisted ${JSON.stringify(callback)}`);
+            logger.debug(`Preload.Invoke -> ${channel} whitelisted`);
+            return ipcRenderer.invoke(channel, data);
+        }
+    },
+    receive: (channel, callback) => {
+        logger.debug(`Preload.receive -> ${channel}`);
+        const validChannels = ["update-grid-settings", "update-window-list", "update-settings", "resize-overlay-display-position-editor", "resize-overlay-capture-position-editor", "change-settings-overlay-position-editor"];
+
+        if (validChannels.includes(channel)) {
+            logger.debug(`Preload.receive -> ${channel} whitelisted `);
             ipcRenderer.on(channel, callback);
         }
     },
@@ -49,27 +58,55 @@ contextBridge.exposeInMainWorld("api", {
         htmlVideoElement.srcObject = stream;
         htmlVideoElement.onloadedmetadata = (e) => htmlVideoElement.play();
     },
-    overlayStream: async (channel: string, windowProperties: WindowPropertiesModel, overlayArray: OverlayModel[], htmlCanvasElement: HTMLCanvasElement) => {
+    overlayStream: async (channel: string, windowProperties: WindowPropertiesModel, overlayArray: OverlayModel[], htmlCanvasElement: HTMLCanvasElement, htmlVideoElementHidden: HTMLVideoElement, htmlVideoElementShown: HTMLVideoElement) => {
         console.log(`OverlayStream -> ${channel}`);
         console.log(`WindowProperties ${JSON.stringify(windowProperties)}`);
-        const stream = await navigator.mediaDevices.getUserMedia({
-            audio: false,
-            video: {
-                mandatory: {
-                    chromeMediaSource: "desktop",
-                    chromeMediaSourceId: windowProperties.programId,
+
+        navigator.mediaDevices
+            .getUserMedia({
+                audio: false,
+                video: {
+                    mandatory: {
+                        chromeMediaSource: "desktop",
+                        chromeMediaSourceId: windowProperties.programId,
+                    },
                 },
-            },
-        } as any);
+            } as any)
+            .then((mediaStream) => {
+                console.log(`Inside of then mediaStream`);
+                htmlVideoElementHidden.srcObject = mediaStream;
 
-        const video = document.createElement("video");
-        video.width = 320;
-        video.height = 240;
-        video.autoplay = true;
+                const context = htmlCanvasElement.getContext("2d");
 
-        video.srcObject = stream;
-        video.onloadedmetadata = (e) => video.play();
+                context!.fillRect(0, 0, htmlCanvasElement.width, htmlCanvasElement.height);
+                // context!.drawImage(htmlVideoElementHidden, 0, 0, htmlVideoElementHidden.videoWidth, htmlVideoElementHidden.videoHeight); // Draw the video image on your canvas
 
-        var videoTexture = new THREE.Texture(video);
+                // overlayArray.forEach((overlay) => {
+                //     context!.fillStyle = "green";
+                //     context!.fillRect(overlay.displayRectangle.startX, overlay.displayRectangle.startY, overlay.displayRectangle.endX, overlay.displayRectangle.endY); // Draw the video image on your canvas
+                //     // context!.drawImage(htmlVideoElementHidden, overlay.displayRectangle.startX, overlay.displayRectangle.startY, overlay.displayRectangle.endX, overlay.displayRectangle.endY); // Draw the video image on your canvas
+                // });
+                const rVFC = () => {
+                    // context!.clearRect(0, 0, htmlCanvasElement.width, htmlCanvasElement.height);
+                    // // context!.drawImage(htmlVideoElementHidden, 0, 0, htmlVideoElementHidden.videoWidth, htmlVideoElementHidden.videoHeight); // Draw the video image on your canvas
+                    //
+                    // overlayArray.forEach((overlay) => {
+                    //     context!.fillStyle = "green";
+                    //     context!.fillRect(overlay.displayRectangle.startX, overlay.displayRectangle.startY, overlay.displayRectangle.endX, overlay.displayRectangle.endY); // Draw the video image on your canvas
+                    //     // context!.drawImage(htmlVideoElementHidden, overlay.displayRectangle.startX, overlay.displayRectangle.startY, overlay.displayRectangle.endX, overlay.displayRectangle.endY); // Draw the video image on your canvas
+                    // });
+
+                    // ... Manipulate your canvas here ...
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    htmlVideoElementHidden.requestVideoFrameCallback(rVFC);
+                };
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                htmlVideoElementHidden.requestVideoFrameCallback(rVFC);
+
+                htmlVideoElementShown.srcObject = htmlCanvasElement.captureStream();
+                htmlVideoElementShown.onloadedmetadata = (e) => htmlVideoElementShown.play();
+            });
     },
 });

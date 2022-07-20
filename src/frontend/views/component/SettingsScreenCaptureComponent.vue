@@ -22,12 +22,17 @@ export default Vue.extend({
         changeWindowName() {
             console.log(`changeWindowName ${this.localWindowName}`);
 
+            this.updateCurrentWindowProperties();
             this.$emit("update:windowName", this.localWindowName);
         },
         async refreshWindowNameArray() {
-            console.log(`Front.ipc -> refresh-settings-window-array`);
-            window.api.send("refresh-settings-window-array");
+            console.log(`Front.ipc -> refresh-window-list`);
             this.windowNameRefreshDegree += 360;
+            window.api.invoke("refresh-window-list").then((windowArray) => {
+                console.log(`Front.ipc -> refresh-window-list ${JSON.stringify(windowArray)}`);
+                this.localWindowArray = windowArray;
+                this.updateCurrentWindowProperties();
+            });
         },
         async changeWindowArray(windowProperties) {
             console.log(`changeWindowArray ${JSON.stringify(windowProperties)}`);
@@ -35,32 +40,40 @@ export default Vue.extend({
             this.localWindowName = windowProperties.programName;
             this.currentWindowProperties = windowProperties;
             this.changeWindowName();
-
-            await this.updateVideoStream(windowProperties);
         },
 
-        async updateVideoStream(windowProperties) {
-            console.log(`updateVideoStream ${JSON.stringify(windowProperties)} `);
+        async updateVideoStream() {
+            console.log(`updateVideoStream ${JSON.stringify(this.currentWindowProperties)} `);
 
             const htmlVideoElement = this.$el.querySelector("video");
             if (htmlVideoElement) {
-                const stream = await window.api.stream("stream-full-window", windowProperties, htmlVideoElement);
+                if (!this.currentWindowProperties) {
+                    htmlVideoElement.srcObject = null;
+                } else {
+                    await window.api.stream("stream-full-window", this.currentWindowProperties!, htmlVideoElement);
+                }
             }
         },
-        updateCurrentWindowProperties(localWindowName): WindowPropertiesModel {
-            console.log(`updateVideoStream ${localWindowName}`);
-            if (localWindowName) {
+        updateCurrentWindowProperties() {
+            console.log(`updateCurrentWindowProperties ${this.localWindowName}`);
+            if (this.localWindowName) {
                 const filteredWindowArray = this.localWindowArray?.filter(
                     (windowSourceProperties: WindowPropertiesModel) => {
-                        return windowSourceProperties.programName === localWindowName;
+                        return windowSourceProperties.programName === this.localWindowName;
                     }
                 );
 
-                console.log(`Filtered list ${JSON.stringify(filteredWindowArray)}`);
-                if (filteredWindowArray.length === 1) {
-                    return filteredWindowArray[0];
+                if (filteredWindowArray.length >= 1) {
+                    this.currentWindowPropertiesIsValid = false;
+                    this.currentWindowProperties = filteredWindowArray[0];
+                    this.updateVideoStream();
+                    console.log("Updating;;" + this.currentWindowPropertiesIsValid);
+                    return;
                 }
             }
+            this.currentWindowPropertiesIsValid = true;
+            this.currentWindowProperties = null;
+            this.updateVideoStream();
             throw new Error("Unable to find a window match");
         },
     },
@@ -69,34 +82,24 @@ export default Vue.extend({
             localWindowName: this.windowName,
             localWindowArray: this.windowPropertiesArray,
             currentWindowProperties: null as WindowPropertiesModel | null,
+            currentWindowPropertiesIsValid: false,
             windowNameRefreshDegree: 0,
             localStream: null as MediaStream | null,
         };
     },
-    watch: {
-        currentWindowProperties(newValue) {
-            console.log(`currentDisplayWindowProperties ${newValue}`);
-            if (newValue) {
-                this.updateVideoStream(newValue);
-            }
-        },
-    },
+    watch: {},
     mounted() {
         window.api.receive("update-window-list", (event, data) => {
             console.log(`SettingsScreenCapture -> Back.ipc -> update-window-list '${JSON.stringify(data)}'`);
 
             this.localWindowArray = data;
-
-            if (!this.currentWindowProperties) {
-                this.currentWindowProperties = this.updateCurrentWindowProperties(this.localWindowName);
-            }
-
-            if (!this.currentWindowProperties) {
-                this.currentWindowProperties = this.updateCurrentWindowProperties(this.localWindowName);
-            }
+            this.updateCurrentWindowProperties();
 
             this.$forceUpdate;
         });
+
+        this.localWindowName = this.windowName;
+        this.refreshWindowNameArray();
     },
 });
 </script>
@@ -116,6 +119,7 @@ export default Vue.extend({
                                 outlined
                                 clearable
                                 hide-details
+                                :error="currentWindowPropertiesIsValid"
                                 @change="changeWindowName"
                             ></v-text-field>
                         </v-col>

@@ -28,7 +28,7 @@ export function createGridWindow(): BrowserWindow {
         },
     });
 
-    gridWindow.on("ready-to-show", () => {
+    gridWindow.once("ready-to-show", () => {
         const settings = getSettings();
         updateGridWindowSettings(settings.settingsGrid);
     });

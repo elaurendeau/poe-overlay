@@ -9,37 +9,37 @@ import OverlayDisplayPositionEditorView from "@/frontend/views/OverlayDisplayPos
 Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
-  {
-    path: "/",
-    name: "overlay",
-    component: OverlayView,
-  },
-  {
-    path: "/settings",
-    name: "settings",
-    component: SettingsView,
-  },
-  {
-    path: "/grid",
-    name: "grid",
-    component: GridView,
-  },
-  {
-    path: "/overlay-capture-position-editor",
-    name: "overlay-capture-position-editor",
-    component: OverlayCapturePositionEditorView,
-  },
-  {
-    path: "/overlay-display-position-editor",
-    name: "overlay-display-position-editor",
-    component: OverlayDisplayPositionEditorView,
-  },
+    {
+        path: "/",
+        name: "overlay",
+        component: OverlayView,
+    },
+    {
+        path: "/settings",
+        name: "settings",
+        component: SettingsView,
+    },
+    {
+        path: "/grid",
+        name: "grid",
+        component: GridView,
+    },
+    {
+        path: "/overlay-capture-position-editor",
+        name: "overlay-capture-position-editor",
+        component: OverlayCapturePositionEditorView,
+    },
+    {
+        path: "/overlay-display-position-editor",
+        name: "overlay-display-position-editor",
+        component: OverlayDisplayPositionEditorView,
+    },
 ];
 
 const router = new VueRouter({
-  mode: "history",
-  base: process.env.BASE_URL,
-  routes,
+    mode: "history",
+    base: process.env.BASE_URL,
+    routes,
 });
 
 export default router;

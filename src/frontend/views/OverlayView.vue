@@ -12,7 +12,9 @@
         <!--                top: `${overlay.displayRectangle.startY}px`,-->
         <!--            }"-->
         <!--        ></canvas>-->
-        <canvas class="w-100 h-100"> </canvas>
+        <video class="hidden" style="display: none" autoplay></video>
+        <video class="shown" autoplay></video>
+        <canvas id="canvas" style="display: none"></canvas>
     </v-container>
 </template>
 
@@ -59,35 +61,50 @@ export default Vue.extend({
             console.log("handleStream");
             this.findMatchingWindowProperties();
             const htmlCanvasElement = this.$el.querySelector("canvas");
-            if (htmlCanvasElement && this.currentWindowProperties && this.settings.settingsOverlay.overlayArray) {
-                console.log({ htmlCanvasElement });
-                window.api.overlayStream(
-                    "TODO",
-                    this.currentWindowProperties,
-                    this.settings.settingsOverlay.overlayArray,
-                    htmlCanvasElement
-                );
-            } else {
+
+            if (!htmlCanvasElement) {
                 throw new Error("unable to locate canvas");
             }
+
+            if (!this.currentWindowProperties) {
+                throw new Error("unable to locate 'this.currentWindowProperties'");
+            }
+
+            if (!this.settings.settingsOverlay.overlayArray) {
+                throw new Error("unable to locate 'this.settings.settingsOverlay.overlayArray'");
+            }
+
+            console.log({ htmlCanvasElement });
+            // window.api.overlayStream(
+            //     "TODO",
+            //     this.currentWindowProperties,
+            //     this.settings.settingsOverlay.overlayArray,
+            //     htmlCanvasElement,
+            //     this.$el.querySelector("video.hidden"),
+            //     this.$el.querySelector("video.shown")
+            // );
         },
     },
 
     mounted() {
         window.api.receive("update-settings", (event, data) => {
             console.log(`Back.ipc -> update-settings '${JSON.stringify(data)}'`);
-
-            this.settings = data;
-            this.handleStream();
-
-            this.$forceUpdate;
+            if (data) {
+                this.settings = data;
+                this.handleStream();
+            } else {
+                throw new Error("Data is undefined");
+            }
         });
 
         window.api.receive("update-window-list", (event, data) => {
             console.log(`Back.ipc -> update-window-list '${JSON.stringify(data)}'`);
-
-            this.windowPropertiesArray = data;
-            this.handleStream();
+            if (data) {
+                this.windowPropertiesArray = data;
+                this.handleStream();
+            } else {
+                throw new Error("Data is undefined");
+            }
         });
     },
 });
@@ -103,6 +120,12 @@ export default Vue.extend({
     height: 100vh
     background-color: transparent
 
-canvas
-    background-color: transparent
+#canvas
+    width: 100vw
+    height: 100vh
+    background-color: violet
+
+video
+    width: 100vw
+    height: 100vh
 </style>

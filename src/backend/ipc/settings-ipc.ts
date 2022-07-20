@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
 import logger from "@/backend/logger/logger";
-import { electronComponents, OVERLAY_WINDOW_KEY, SETTINGS_WINDOW_KEY } from "@/backend/electron-component/electron-components";
+import { electronComponents, OVERLAY_WINDOW_KEY, SETTINGS_WINDOW_KEY, WindowsKey } from "@/backend/electron-component/electron-components";
 import { SettingsModel } from "@/backend/model/settings-model";
 import { validateGridSettings } from "@/backend/manager/grid-manager";
 
@@ -14,11 +14,6 @@ export const hideSettings = ipcMain.on("hide-settings", async (event, args) => {
     electronComponents.windows[SETTINGS_WINDOW_KEY].hide();
 });
 
-export const refreshWindowNameArray = ipcMain.on("refresh-settings-window-array", async (event, args) => {
-    logger.debug("IpcMain.receive -> refresh-settings-window-array");
-
-    sendWindowPropertiesArray(await getWindowPropertiesList(), SETTINGS_WINDOW_KEY);
-});
 export const saveSettings = ipcMain.on("save-settings", async (event, settings: SettingsModel) => {
     logger.debug(`IpcMain.receive -> save-settings: ${JSON.stringify(settings)}`);
 
@@ -32,8 +27,8 @@ export const saveSettings = ipcMain.on("save-settings", async (event, settings: 
     }
 });
 
-export function updateSettingsWindow(settings: SettingsModel) {
-    logger.debug(`SettingsWindow.send -> update-settings: ${JSON.stringify(settings)}`);
+export function updateSettingsWindow(settings: SettingsModel, windowKey: WindowsKey) {
+    logger.debug(`SettingsIpc.send -> update-settings to ${windowKey}: ${JSON.stringify(settings)}`);
 
-    electronComponents.windows[SETTINGS_WINDOW_KEY].webContents.send("update-settings", settings);
+    electronComponents.windows[windowKey].webContents.send("update-settings", settings);
 }
