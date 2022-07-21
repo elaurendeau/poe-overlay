@@ -81,11 +81,9 @@ contextBridge.exposeInMainWorld("api", {
 
                 const context = htmlCanvasElement.getContext("2d");
 
-                context!.clearRect(0, 0, htmlCanvasElement.width, htmlCanvasElement.height);
-
                 const rVFC = () => {
+                    context!.clearRect(0, 0, htmlCanvasElement.width, htmlCanvasElement.height);
                     overlayArray.forEach((overlay) => {
-                        console.log({ overlay });
                         const displayWidth = overlay.displayRectangle.endX - overlay.displayRectangle.startX;
                         const displayHeight = overlay.displayRectangle.endY - overlay.displayRectangle.startY;
 

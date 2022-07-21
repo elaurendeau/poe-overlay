@@ -15,6 +15,7 @@ export function createDisplayOverlayPositionEditorWindow(): BrowserWindow {
         width: displayWidth,
         height: displayHeight,
         autoHideMenuBar: true,
+        skipTaskbar: true,
         transparent: true,
         frame: false,
         alwaysOnTop: true,
@@ -28,6 +29,8 @@ export function createDisplayOverlayPositionEditorWindow(): BrowserWindow {
             preload: path.join(__dirname, "preload.js"),
         },
     });
+    overlay.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+    overlay.setAlwaysOnTop(true, "normal");
     overlay.once("ready-to-show", () => {
         const settings = getSettings();
         updateOverlayPositionEditorSettings(settings.settingsOverlayPositionEditor);

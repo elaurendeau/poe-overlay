@@ -16,6 +16,7 @@ export function createOverlayWindow(): BrowserWindow {
         width: displayWidth,
         height: displayHeight,
         autoHideMenuBar: true,
+        skipTaskbar: true,
         transparent: true,
         frame: false,
         alwaysOnTop: true,

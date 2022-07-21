@@ -28,6 +28,8 @@ export function createSettingsWindow(): BrowserWindow {
             preload: path.join(__dirname, "preload.js"),
         },
     });
+    settingsWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+    settingsWindow.setAlwaysOnTop(true, "normal");
     settingsWindow.on("ready-to-show", async () => {
         logger.debug("Ready to show settings");
         const settings = getSettings();
