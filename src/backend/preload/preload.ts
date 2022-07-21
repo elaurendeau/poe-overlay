@@ -62,6 +62,9 @@ contextBridge.exposeInMainWorld("api", {
         console.log(`OverlayStream -> ${channel}`);
         console.log(`WindowProperties ${JSON.stringify(windowProperties)}`);
 
+        htmlCanvasElement.width = 2560;
+        htmlCanvasElement.height = 1440;
+
         navigator.mediaDevices
             .getUserMedia({
                 audio: false,
@@ -78,23 +81,30 @@ contextBridge.exposeInMainWorld("api", {
 
                 const context = htmlCanvasElement.getContext("2d");
 
-                context!.fillRect(0, 0, htmlCanvasElement.width, htmlCanvasElement.height);
-                // context!.drawImage(htmlVideoElementHidden, 0, 0, htmlVideoElementHidden.videoWidth, htmlVideoElementHidden.videoHeight); // Draw the video image on your canvas
+                context!.clearRect(0, 0, htmlCanvasElement.width, htmlCanvasElement.height);
 
-                // overlayArray.forEach((overlay) => {
-                //     context!.fillStyle = "green";
-                //     context!.fillRect(overlay.displayRectangle.startX, overlay.displayRectangle.startY, overlay.displayRectangle.endX, overlay.displayRectangle.endY); // Draw the video image on your canvas
-                //     // context!.drawImage(htmlVideoElementHidden, overlay.displayRectangle.startX, overlay.displayRectangle.startY, overlay.displayRectangle.endX, overlay.displayRectangle.endY); // Draw the video image on your canvas
-                // });
                 const rVFC = () => {
-                    // context!.clearRect(0, 0, htmlCanvasElement.width, htmlCanvasElement.height);
-                    // // context!.drawImage(htmlVideoElementHidden, 0, 0, htmlVideoElementHidden.videoWidth, htmlVideoElementHidden.videoHeight); // Draw the video image on your canvas
-                    //
-                    // overlayArray.forEach((overlay) => {
-                    //     context!.fillStyle = "green";
-                    //     context!.fillRect(overlay.displayRectangle.startX, overlay.displayRectangle.startY, overlay.displayRectangle.endX, overlay.displayRectangle.endY); // Draw the video image on your canvas
-                    //     // context!.drawImage(htmlVideoElementHidden, overlay.displayRectangle.startX, overlay.displayRectangle.startY, overlay.displayRectangle.endX, overlay.displayRectangle.endY); // Draw the video image on your canvas
-                    // });
+                    overlayArray.forEach((overlay) => {
+                        console.log({ overlay });
+                        const displayWidth = overlay.displayRectangle.endX - overlay.displayRectangle.startX;
+                        const displayHeight = overlay.displayRectangle.endY - overlay.displayRectangle.startY;
+
+                        const captureWidth = overlay.captureRectangle.endX - overlay.captureRectangle.startX;
+                        const captureHeight = overlay.captureRectangle.endY - overlay.captureRectangle.startY;
+
+                        context!.fillRect(overlay.displayRectangle.startX, overlay.displayRectangle.startY, displayWidth, displayHeight);
+                        context!.drawImage(
+                            htmlVideoElementHidden,
+                            overlay.captureRectangle.startX,
+                            overlay.captureRectangle.startY,
+                            captureWidth,
+                            captureHeight,
+                            overlay.displayRectangle.startX,
+                            overlay.displayRectangle.startY,
+                            displayWidth,
+                            displayHeight
+                        ); // Draw the video image on your canvas
+                    });
 
                     // ... Manipulate your canvas here ...
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

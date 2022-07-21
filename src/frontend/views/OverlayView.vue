@@ -12,9 +12,9 @@
         <!--                top: `${overlay.displayRectangle.startY}px`,-->
         <!--            }"-->
         <!--        ></canvas>-->
-        <video class="hidden" style="display: none" autoplay></video>
-        <video class="shown" autoplay></video>
-        <canvas id="canvas" style="display: none"></canvas>
+        <video class="shown fullscreen-relative" autoplay></video>
+        <canvas id="canvas" class="fullscreen-relative"></canvas>
+        <video class="hidden fullscreen-relative" style="display: none" autoplay></video>
     </v-container>
 </template>
 
@@ -75,14 +75,14 @@ export default Vue.extend({
             }
 
             console.log({ htmlCanvasElement });
-            // window.api.overlayStream(
-            //     "TODO",
-            //     this.currentWindowProperties,
-            //     this.settings.settingsOverlay.overlayArray,
-            //     htmlCanvasElement,
-            //     this.$el.querySelector("video.hidden"),
-            //     this.$el.querySelector("video.shown")
-            // );
+            window.api.overlayStream(
+                "TODO",
+                this.currentWindowProperties,
+                this.settings.settingsOverlay.overlayArray,
+                htmlCanvasElement,
+                this.$el.querySelector("video.hidden"),
+                this.$el.querySelector("video.shown")
+            );
         },
     },
 
@@ -116,16 +116,12 @@ export default Vue.extend({
     margin: 0
 
 #container
-    width: 100vw
-    height: 100vh
     background-color: transparent
-
-#canvas
     width: 100vw
     height: 100vh
-    background-color: violet
 
-video
-    width: 100vw
-    height: 100vh
+.fullscreen-relative
+    width: 100%
+    height: 100%
+    position: absolute
 </style>
