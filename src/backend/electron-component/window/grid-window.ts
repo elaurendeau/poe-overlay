@@ -28,7 +28,8 @@ export function createGridWindow(): BrowserWindow {
             preload: path.join(__dirname, "preload.js"),
         },
     });
-
+    gridWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+    gridWindow.setAlwaysOnTop(true, "normal");
     gridWindow.once("ready-to-show", () => {
         const settings = getSettings();
         updateGridWindowSettings(settings.settingsGrid);

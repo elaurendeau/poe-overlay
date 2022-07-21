@@ -29,7 +29,8 @@ export function createOverlayWindow(): BrowserWindow {
             preload: path.join(__dirname, "preload.js"),
         },
     });
-
+    overlayWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+    overlayWindow.setAlwaysOnTop(true, "normal");
     overlayWindow.on("ready-to-show", async () => {
         const settings = getSettings();
         updateSettingsWindow(settings, OVERLAY_WINDOW_KEY);
