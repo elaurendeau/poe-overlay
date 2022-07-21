@@ -25,6 +25,9 @@ export default Vue.extend({
         :style="{ 'background-color': localDisplayPositionEditorColor }"
         fluid
     >
+        <div id="background">DISPLAY</div>
+        <div class="vertical-line"></div>
+        <div class="horizontal-line"></div>
     </v-container>
 </template>
 
@@ -35,4 +38,27 @@ export default Vue.extend({
 
 #global-container
     -webkit-app-region: drag
+
+#background
+    position: absolute
+    top: 0
+    left: 0
+    bottom: 0
+    right: 0
+    z-index: -1
+    overflow: hidden
+
+.vertical-line
+    position: relative
+    width: 0px
+    height: 100%
+    left: calc(50% - 2px)
+    border: 1px dotted black
+
+.horizontal-line
+    position: absolute
+    width: 100%
+    height: 0px
+    top: calc(50% - 2px)
+    border: 1px dotted black
 </style>

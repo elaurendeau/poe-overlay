@@ -189,6 +189,7 @@ export default Vue.extend({
                                 v-model.lazy="localOverlay.displayRectangle.endX"
                                 type="number"
                                 required
+                                disabled
                             >
                                 >
                             </v-text-field>
@@ -199,6 +200,7 @@ export default Vue.extend({
                                 v-model.lazy="localOverlay.displayRectangle.endY"
                                 type="number"
                                 required
+                                disabled
                             >
                                 >
                             </v-text-field>
