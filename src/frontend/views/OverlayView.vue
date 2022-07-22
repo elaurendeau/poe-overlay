@@ -1,17 +1,5 @@
 <template>
     <v-container id="container" fluid>
-        <!--        <canvas-->
-        <!--            class="display-box"-->
-        <!--            v-for="overlay in settings.settingsOverlay.overlayArray"-->
-        <!--            :key="overlay.id"-->
-        <!--            :style="{-->
-        <!--                width: `${overlay.displayRectangle.endX - overlay.displayRectangle.startX}px`,-->
-        <!--                height: `${overlay.displayRectangle.endY - overlay.displayRectangle.startY}px`,-->
-        <!--                position: `absolute`,-->
-        <!--                left: `${overlay.displayRectangle.startX}px`,-->
-        <!--                top: `${overlay.displayRectangle.startY}px`,-->
-        <!--            }"-->
-        <!--        ></canvas>-->
         <video class="shown fullscreen-relative" autoplay></video>
         <canvas id="canvas" class="fullscreen-relative"></canvas>
         <video class="hidden fullscreen-relative" style="display: none" autoplay></video>

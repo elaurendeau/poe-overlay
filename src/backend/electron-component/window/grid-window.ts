@@ -4,6 +4,7 @@ import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import { electronComponents, GRID_WINDOW_KEY } from "@/backend/electron-component/electron-components";
 import { updateGridWindowSettings } from "@/backend/ipc/grid-ipc";
 import { getSettings, readSettings } from "@/backend/manager/settings-manager";
+import logger from "@/backend/logger/logger";
 
 export function createGridWindow(): BrowserWindow {
     const primaryDisplay = screen.getPrimaryDisplay();
@@ -28,11 +29,17 @@ export function createGridWindow(): BrowserWindow {
             preload: path.join(__dirname, "preload.js"),
         },
     });
+    gridWindow.setBounds({ x: 0, y: 0, width: displayWidth, height: displayHeight });
     gridWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
     gridWindow.setAlwaysOnTop(true, "normal");
     gridWindow.once("ready-to-show", () => {
         const settings = getSettings();
         updateGridWindowSettings(settings.settingsGrid);
+    });
+
+    gridWindow.on("show", () => {
+        gridWindow.maximize();
+        logger.debug("Grid window Maximize");
     });
     // gridWindow.webContents.openDevTools({
     //   mode: "detach",

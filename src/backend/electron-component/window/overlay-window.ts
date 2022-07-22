@@ -6,6 +6,7 @@ import { getSettings } from "@/backend/manager/settings-manager";
 import { getWindowPropertiesList } from "@/backend/manager/window-properties-manager";
 import { sendWindowPropertiesArray } from "@/backend/ipc/window-properties-ipc";
 import { updateSettingsWindow } from "@/backend/ipc/settings-ipc";
+import logger from "@/backend/logger/logger";
 
 export function createOverlayWindow(): BrowserWindow {
     const primaryDisplay = screen.getPrimaryDisplay();
@@ -35,6 +36,12 @@ export function createOverlayWindow(): BrowserWindow {
         const settings = getSettings();
         updateSettingsWindow(settings, OVERLAY_WINDOW_KEY);
         sendWindowPropertiesArray(await getWindowPropertiesList(), OVERLAY_WINDOW_KEY);
+    });
+
+    overlayWindow.on("show", () => {
+        overlayWindow.maximize();
+        overlayWindow.setBounds({ x: 0, y: 0, width: displayWidth, height: displayHeight });
+        logger.debug("Overlay window Maximize " + JSON.stringify(overlayWindow.getBounds()));
     });
 
     overlayWindow.webContents.openDevTools({
