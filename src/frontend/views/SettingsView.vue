@@ -170,6 +170,16 @@ export default Vue.extend({
                     <template v-slot:title>Program to capture the image from:</template>
                 </SettingsScreenCaptureSlotComponent>
 
+                <v-alert
+                    dense
+                    outlined
+                    type="error"
+                    class="w-100"
+                    style="margin-left: 2.5%; width: 95%"
+                    v-if="showScreenCaptureSettings && currentProfile !== null"
+                >
+                    Application restart required after each change.
+                </v-alert>
                 <SettingsScreenCaptureSlotComponent
                     :window-name.sync="currentProfile.settingsScreenCapture.displayProgramName"
                     :window-source-array="windowPropertiesArray"
@@ -178,9 +188,6 @@ export default Vue.extend({
                 >
                     <template v-slot:title>
                         <span>Program to display the image to:</span>
-                        <span>
-                            TODO in order to apply a change to the display window, the application has to be restarted.
-                        </span>
                     </template>
                 </SettingsScreenCaptureSlotComponent>
             </v-container>
