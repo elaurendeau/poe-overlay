@@ -83,7 +83,6 @@ contextBridge.exposeInMainWorld("api", {
 
                 const rVFC = () => {
                     context!.clearRect(0, 0, htmlCanvasElement.width, htmlCanvasElement.height);
-                    // context!.fillRect(0, 0, htmlCanvasElement.width, htmlCanvasElement.height);
                     overlayArray.forEach((overlay) => {
                         const displayWidth = overlay.displayRectangle.endX - overlay.displayRectangle.startX;
                         const displayHeight = overlay.displayRectangle.endY - overlay.displayRectangle.startY;
@@ -91,8 +90,6 @@ contextBridge.exposeInMainWorld("api", {
                         const captureWidth = overlay.captureRectangle.endX - overlay.captureRectangle.startX;
                         const captureHeight = overlay.captureRectangle.endY - overlay.captureRectangle.startY;
 
-                        // context!.fillRect(overlay.displayRectangle.startX, overlay.displayRectangle.startY - displayHeight * 2 - 40, captureWidth, captureHeight);
-                        // context!.fillRect(overlay.displayRectangle.startX, overlay.displayRectangle.startY - displayHeight - 10, displayWidth, displayHeight);
                         context!.drawImage(
                             htmlVideoElementHidden,
                             overlay.captureRectangle.startX,

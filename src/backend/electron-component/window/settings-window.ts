@@ -18,7 +18,7 @@ export function createSettingsWindow(): BrowserWindow {
         transparent: true,
         alwaysOnTop: true,
         resizable: false,
-        show: false,
+        show: true,
         icon: "./public/img/icons/blind.png",
         webPreferences: {
             // Use pluginOptions.nodeIntegration, leave this alone

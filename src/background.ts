@@ -45,7 +45,6 @@ app.on("ready", async () => {
     logger.info("Creating overlay and tray");
     createDisplayOverlayPositionEditorWindow();
     createCaptureOverlayPositionEditorWindow();
-    createOverlayWindow();
     createGridWindow();
     createTray();
     createSettingsWindow();

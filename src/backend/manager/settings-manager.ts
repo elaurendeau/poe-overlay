@@ -5,12 +5,13 @@ import path from "path";
 import * as fs from "fs";
 import { createDefaultGridSettings } from "@/backend/manager/grid-manager";
 import { createDefaultOverlaySettings } from "@/backend/manager/overlay-manager";
-import { createDefaultSettingsOverlayPositionEditorSettings } from "@/backend/manager/overlay-position-editor-manager";
 import { updateGridWindowSettings } from "@/backend/ipc/grid-ipc";
 import { updateOverlayPositionEditorSettings } from "@/backend/ipc/overlay-position-editor-ipc";
 import { updateSettingsWindow } from "@/backend/ipc/settings-ipc";
-import { createDefaultScreenCaptureSettings } from "@/backend/manager/window-properties-manager";
 import { OVERLAY_WINDOW_KEY, SETTINGS_WINDOW_KEY } from "@/backend/electron-component/electron-components";
+import { createDefaultProfile, getCurrentProfile } from "@/backend/manager/profile-manager";
+import { ProfileModel } from "@/backend/model/profile-model";
+import { createDefaultSettingsOverlayPositionEditorSettings } from "@/backend/manager/overlay-position-editor-manager";
 
 const userDataPath = (electron.app || electron.remote.app).getPath("userData");
 const SETTINGS_FILE_PATH = path.join(userDataPath, "settings.json");
@@ -49,11 +50,13 @@ export function readSettings(): SettingsModel {
 }
 
 export function createDefaultSettings(): SettingsModel {
+    const profileDefaultArray: Array<ProfileModel> = [];
+    profileDefaultArray.push(createDefaultProfile());
+
     return {
         settingsGrid: createDefaultGridSettings(),
-        settingsOverlay: createDefaultOverlaySettings(),
         settingsOverlayPositionEditor: createDefaultSettingsOverlayPositionEditorSettings(),
-        settingsScreenCapture: createDefaultScreenCaptureSettings(),
+        profileArray: profileDefaultArray,
     } as SettingsModel;
 }
 

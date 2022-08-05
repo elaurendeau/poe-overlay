@@ -17,11 +17,18 @@ export function createTray(): Tray {
             checked: true,
             click: () => {
                 const window = electronComponents.windows[OVERLAY_WINDOW_KEY];
-                if (window.isVisible()) {
+                if (window && window.isVisible()) {
                     window.hide();
                 } else {
                     window.show();
                 }
+            },
+        },
+        {
+            label: "Restart",
+            click: () => {
+                app.relaunch();
+                app.exit();
             },
         },
         {

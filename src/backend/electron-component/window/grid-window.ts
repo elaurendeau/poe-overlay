@@ -39,6 +39,7 @@ export function createGridWindow(): BrowserWindow {
 
     gridWindow.on("show", () => {
         gridWindow.maximize();
+        gridWindow.setBounds({ x: 0, y: 0, width: displayWidth, height: displayHeight });
         logger.debug("Grid window Maximize");
     });
     // gridWindow.webContents.openDevTools({

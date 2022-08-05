@@ -1,19 +1,19 @@
 import { BrowserWindow, screen } from "electron";
 import path from "path";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
-import { electronComponents, OVERLAY_WINDOW_KEY, SETTINGS_WINDOW_KEY } from "@/backend/electron-component/electron-components";
+import { electronComponents, OVERLAY_WINDOW_KEY } from "@/backend/electron-component/electron-components";
 import { getSettings } from "@/backend/manager/settings-manager";
 import { getWindowPropertiesList } from "@/backend/manager/window-properties-manager";
 import { sendWindowPropertiesArray } from "@/backend/ipc/window-properties-ipc";
 import { updateSettingsWindow } from "@/backend/ipc/settings-ipc";
-import logger from "@/backend/logger/logger";
+import { overlayWindow } from "electron-overlay-window";
 
 export function createOverlayWindow(): BrowserWindow {
     const primaryDisplay = screen.getPrimaryDisplay();
     const displayWidth = primaryDisplay.size.width;
     const displayHeight = primaryDisplay.size.height;
     // Create the browser window.
-    const overlayWindow = new BrowserWindow({
+    const window = new BrowserWindow({
         width: displayWidth,
         height: displayHeight,
         autoHideMenuBar: true,
@@ -30,36 +30,39 @@ export function createOverlayWindow(): BrowserWindow {
             preload: path.join(__dirname, "preload.js"),
         },
     });
-    overlayWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
-    overlayWindow.setAlwaysOnTop(true, "normal");
-    overlayWindow.on("ready-to-show", async () => {
+
+    window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+    window.setAlwaysOnTop(true, "normal");
+    window.on("ready-to-show", async () => {
         const settings = getSettings();
         updateSettingsWindow(settings, OVERLAY_WINDOW_KEY);
-        sendWindowPropertiesArray(await getWindowPropertiesList(), OVERLAY_WINDOW_KEY);
+
+        // const windowPropertiesModels = await getWindowPropertiesList();
+        // const displayWindowProperties = windowPropertiesModels.filter((it) => it.programName === settings.settingsScreenCapture.displayProgramName)[0];
+        //
+        // if (displayWindowProperties) {
+        //     overlayWindow.attachTo(window, displayWindowProperties.programName);
+        // }
+
+        // sendWindowPropertiesArray(windowPropertiesModels, OVERLAY_WINDOW_KEY);
     });
 
-    overlayWindow.on("show", () => {
-        overlayWindow.maximize();
-        overlayWindow.setBounds({ x: 0, y: 0, width: displayWidth, height: displayHeight });
-        logger.debug("Overlay window Maximize " + JSON.stringify(overlayWindow.getBounds()));
-    });
-
-    overlayWindow.webContents.openDevTools({
+    window.webContents.openDevTools({
         mode: "detach",
     });
 
-    overlayWindow.setIgnoreMouseEvents(true);
+    window.setIgnoreMouseEvents(true);
 
     if (process.env.WEBPACK_DEV_SERVER_URL) {
         // Load the url of the  dev server if in development mode
-        overlayWindow.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string);
+        window.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string);
         // if (!process.env.IS_TEST) overlayWindow.webContents.openDevTools();
     } else {
         createProtocol("app");
         // Load the index.html when not in development
-        overlayWindow.loadURL("app://./index.html");
+        window.loadURL("app://./index.html");
     }
 
-    electronComponents.windows[OVERLAY_WINDOW_KEY] = overlayWindow;
-    return overlayWindow;
+    electronComponents.windows[OVERLAY_WINDOW_KEY] = window;
+    return window;
 }

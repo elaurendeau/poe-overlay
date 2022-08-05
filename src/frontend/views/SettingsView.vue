@@ -3,11 +3,11 @@ import Vue from "vue";
 import SettingsGridComponent from "@/frontend/views/component/SettingsGridComponent.vue";
 import { SettingsGridModel } from "@/backend/model/settings-grid-model";
 import { SettingsModel } from "@/backend/model/settings-model";
-import { SettingsOverlayModel } from "@/backend/model/settings-overlay-model";
-import SettingsOverlayComponent from "@/frontend/views/component/SettingsOverlayComponent.vue";
 import { SettingsOverlayPositionEditorModel } from "@/backend/model/settings-overlay-position-editor-model";
 import SettingsPositionEditorComponent from "@/frontend/views/component/SettingsPositionEditorComponent.vue";
-import { SettingsScreenCaptureModel } from "@/backend/model/settings-screen-capture";
+import { ProfileModel } from "@/backend/model/profile-model";
+import SettingsProfileComponent from "@/frontend/views/component/SettingsProfileComponent.vue";
+import SettingsOverlayComponent from "@/frontend/views/component/SettingsOverlayComponent.vue";
 import SettingsScreenCaptureSlotComponent from "@/frontend/views/component/SettingsScreenCaptureComponent.vue";
 
 export default Vue.extend({
@@ -16,18 +16,20 @@ export default Vue.extend({
         return {
             settings: {
                 settingsGrid: {} as SettingsGridModel,
-                settingsOverlay: {} as SettingsOverlayModel,
                 settingsOverlayPositionEditor: {} as SettingsOverlayPositionEditorModel,
-                settingsScreenCapture: {} as SettingsScreenCaptureModel,
+                profileArray: [] as Array<ProfileModel>,
             } as SettingsModel,
+            pagesHasErrors: false,
             windowPropertiesArray: [],
-            showOverlaySettings: true,
+            showOverlaySettings: false,
             showGridSettings: false,
             showOverlayPositionEditorSettings: false,
             showScreenCaptureSettings: false,
             showGrid: false,
+            showProfileSettings: true,
             drawer: true,
             mini: true,
+            currentProfile: null,
         };
     },
     components: {
@@ -35,6 +37,7 @@ export default Vue.extend({
         SettingsOverlayComponent,
         SettingsPositionEditorComponent,
         SettingsScreenCaptureSlotComponent,
+        SettingsProfileComponent,
     },
     methods: {
         hide() {
@@ -51,7 +54,10 @@ export default Vue.extend({
             window.api.send("save-settings", this.settings);
         },
         showSettings(name: string) {
-            if (name === "grid") {
+            if (name === "profile") {
+                this.hideAllSettings();
+                this.showProfileSettings = true;
+            } else if (name === "grid") {
                 this.hideAllSettings();
                 this.showGridSettings = true;
             } else if (name === "overlay") {
@@ -71,6 +77,7 @@ export default Vue.extend({
             this.showOverlaySettings = false;
             this.showOverlayPositionEditorSettings = false;
             this.showScreenCaptureSettings = false;
+            this.showProfileSettings = false;
         },
 
         swapShowComponents() {
@@ -99,6 +106,11 @@ export default Vue.extend({
             this.windowPropertiesArray = data;
         });
     },
+    computed: {
+        isFormValid() {
+            return this.$store.state.profilesAreValid;
+        },
+    },
 });
 </script>
 
@@ -112,7 +124,24 @@ export default Vue.extend({
 
         <v-main class="h-100">
             <v-container style="color: red" fluid>
+                <v-alert
+                    dense
+                    outlined
+                    type="info"
+                    class="w-100"
+                    v-if="!currentProfile"
+                    style="margin-left: 2.5%; margin-top: 10px; width: 95%"
+                >
+                    Please select a profile within the <strong>Manage Profiles</strong> menu.
+                </v-alert>
+
                 <!-- If using vue-router -->
+                <SettingsProfileComponent
+                    :profile-array.sync="settings.profileArray"
+                    :selected-profile.sync="currentProfile"
+                    v-if="showProfileSettings && settings.profileArray?.length > 0"
+                />
+
                 <SettingsGridComponent
                     :column-count.sync="settings.settingsGrid.columnCount"
                     :row-count.sync="settings.settingsGrid.rowCount"
@@ -122,8 +151,8 @@ export default Vue.extend({
                 />
 
                 <SettingsOverlayComponent
-                    :overlay-array.sync="settings.settingsOverlay.overlayArray"
-                    v-if="showOverlaySettings"
+                    :overlay-array.sync="currentProfile.settingsOverlay.overlayArray"
+                    v-if="showOverlaySettings && currentProfile !== null"
                 />
 
                 <SettingsPositionEditorComponent
@@ -133,21 +162,26 @@ export default Vue.extend({
                 />
 
                 <SettingsScreenCaptureSlotComponent
-                    :window-name.sync="settings.settingsScreenCapture.captureProgramName"
+                    :window-name.sync="currentProfile.settingsScreenCapture.captureProgramName"
                     :window-source-array="windowPropertiesArray"
                     :stream-element-name="'stream-capture'"
-                    v-if="showScreenCaptureSettings"
+                    v-if="showScreenCaptureSettings && currentProfile !== null"
                 >
                     <template v-slot:title>Program to capture the image from:</template>
                 </SettingsScreenCaptureSlotComponent>
 
                 <SettingsScreenCaptureSlotComponent
-                    :window-name.sync="settings.settingsScreenCapture.displayProgramName"
+                    :window-name.sync="currentProfile.settingsScreenCapture.displayProgramName"
                     :window-source-array="windowPropertiesArray"
                     :stream-element-name="'stream-display'"
-                    v-if="showScreenCaptureSettings"
+                    v-if="showScreenCaptureSettings && currentProfile !== null"
                 >
-                    <template v-slot:title>Program to display the image to:</template>
+                    <template v-slot:title>
+                        <span>Program to display the image to:</span>
+                        <span>
+                            TODO in order to apply a change to the display window, the application has to be restarted.
+                        </span>
+                    </template>
                 </SettingsScreenCaptureSlotComponent>
             </v-container>
         </v-main>
@@ -168,6 +202,26 @@ export default Vue.extend({
 
             <v-container style="margin: 0; padding: 0; border: 0" class="d-flex flex-column h-100">
                 <v-list dense>
+                    <v-list-item @click="showSettings('profile')">
+                        <v-list-item-icon>
+                            <v-icon>mdi-account-details</v-icon>
+                        </v-list-item-icon>
+
+                        <v-list-item-content>
+                            <v-list-item-title>Manage Profiles</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+
+                    <v-list-item v-if="currentProfile !== null">
+                        <v-list-item-icon style="padding-left: 20px">
+                            <v-icon>mdi-menu-right</v-icon>
+                        </v-list-item-icon>
+
+                        <v-list-item-content>
+                            <v-list-item-title>{{ currentProfile.name }}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+
                     <v-list-item @click="showSettings('overlay')">
                         <v-list-item-icon>
                             <v-icon>mdi-buffer</v-icon>
@@ -177,6 +231,17 @@ export default Vue.extend({
                             <v-list-item-title>Manage Overlays</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
+
+                    <v-list-item @click="showSettings('screenCapture')">
+                        <v-list-item-icon>
+                            <v-icon>mdi-monitor-eye</v-icon>
+                        </v-list-item-icon>
+
+                        <v-list-item-content>
+                            <v-list-item-title>Screen Capture</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+
                     <v-list-item @click="showSettings('grid')">
                         <v-list-item-icon>
                             <v-icon>mdi-border-none</v-icon>
@@ -201,26 +266,16 @@ export default Vue.extend({
                             <v-list-item-title>Position Editor</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
-
-                    <v-list-item @click="showSettings('screenCapture')">
-                        <v-list-item-icon>
-                            <v-icon>mdi-monitor-eye</v-icon>
-                        </v-list-item-icon>
-
-                        <v-list-item-content>
-                            <v-list-item-title>Screen Capture</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
                 </v-list>
 
-                <v-list class="mt-auto" dense>
+                <v-list :disabled="!isFormValid" class="mt-auto" dense>
                     <v-list-item @click="save">
                         <v-list-item-icon>
-                            <v-icon>mdi-content-save</v-icon>
+                            <v-icon :class="{ disabled: !isFormValid }">mdi-content-save</v-icon>
                         </v-list-item-icon>
 
                         <v-list-item-content>
-                            <v-list-item-title>Save</v-list-item-title>
+                            <v-list-item-title :class="{ disabled: !isFormValid }">Save</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
                 </v-list>
@@ -239,4 +294,8 @@ v-list-item-title
 
 #settings-content
     padding: 25px
+
+.disabled
+    cursor: not-allowed
+    color: gray
 </style>
