@@ -5,6 +5,7 @@ import OverlayView from "@/frontend/views/OverlayView.vue";
 import GridView from "@/frontend/views/GridView.vue";
 import OverlayCapturePositionEditorView from "@/frontend/views/OverlayCapturePositionEditorView.vue";
 import OverlayDisplayPositionEditorView from "@/frontend/views/OverlayDisplayPositionEditorView.vue";
+import ProfilePickerView from "@/frontend/views/ProfilePickerView.vue";
 
 Vue.use(VueRouter);
 
@@ -33,6 +34,11 @@ const routes: Array<RouteConfig> = [
         path: "/overlay-display-position-editor",
         name: "overlay-display-position-editor",
         component: OverlayDisplayPositionEditorView,
+    },
+    {
+        path: "/profile-picker",
+        name: "profile-picker",
+        component: ProfilePickerView,
     },
 ];
 

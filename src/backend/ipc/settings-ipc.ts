@@ -1,12 +1,10 @@
 import { ipcMain } from "electron";
 import logger from "@/backend/logger/logger";
-import { electronComponents, OVERLAY_WINDOW_KEY, SETTINGS_WINDOW_KEY, WindowsKey } from "@/backend/electron-component/electron-components";
+import { electronComponents, SETTINGS_WINDOW_KEY, WindowsKey } from "@/backend/electron-component/electron-components";
 import { SettingsModel } from "@/backend/model/settings-model";
 import { validateGridSettings } from "@/backend/manager/grid-manager";
 
 import { updateAllSettings, writeSettings } from "@/backend/manager/settings-manager";
-import { getWindowPropertiesList } from "@/backend/manager/window-properties-manager";
-import { sendWindowPropertiesArray } from "@/backend/ipc/window-properties-ipc";
 
 export const hideSettings = ipcMain.on("hide-settings", async (event, args) => {
     logger.debug("IpcMain.receive -> hide-settings");

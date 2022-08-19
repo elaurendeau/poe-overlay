@@ -3,6 +3,24 @@ import { electronComponents, OVERLAY_CAPTURE_POSITION_EDITOR_WINDOW_KEY, OVERLAY
 import { RectangleModel } from "@/backend/model/rectangle-model";
 import { SettingsOverlayPositionEditorModel } from "@/backend/model/settings-overlay-position-editor-model";
 
+export function resizeDisplay() {
+    const captureWindow = electronComponents.windows[OVERLAY_CAPTURE_POSITION_EDITOR_WINDOW_KEY];
+    const windowSize = captureWindow.getSize();
+
+    const displayWindow = electronComponents.windows[OVERLAY_DISPLAY_POSITION_EDITOR_WINDOW_KEY];
+    const windowPosition = displayWindow.getPosition();
+
+    const windowLocation = {
+        startX: windowPosition[0],
+        startY: windowPosition[1],
+        endX: windowPosition[0] + windowSize[0],
+        endY: windowPosition[1] + windowSize[1],
+    } as RectangleModel;
+
+    displayWindow.setSize(windowSize[0], windowSize[1]);
+    updateOverlayDisplayPositionCoordinates();
+}
+
 export function updateOverlayCapturePositionCoordinates() {
     const window = electronComponents.windows[OVERLAY_CAPTURE_POSITION_EDITOR_WINDOW_KEY];
     const windowSize = window.getSize();

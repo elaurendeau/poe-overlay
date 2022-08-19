@@ -134,7 +134,6 @@ export default Vue.extend({
                 >
                     Please select a profile within the <strong>Manage Profiles</strong> menu.
                 </v-alert>
-
                 <!-- If using vue-router -->
                 <SettingsProfileComponent
                     :profile-array.sync="settings.profileArray"

@@ -6,7 +6,6 @@ import { getSettings } from "@/backend/manager/settings-manager";
 import { getWindowPropertiesList } from "@/backend/manager/window-properties-manager";
 import { sendWindowPropertiesArray } from "@/backend/ipc/window-properties-ipc";
 import { updateSettingsWindow } from "@/backend/ipc/settings-ipc";
-import { overlayWindow } from "electron-overlay-window";
 
 export function createOverlayWindow(): BrowserWindow {
     const primaryDisplay = screen.getPrimaryDisplay();
@@ -36,14 +35,14 @@ export function createOverlayWindow(): BrowserWindow {
     window.on("ready-to-show", async () => {
         const settings = getSettings();
         updateSettingsWindow(settings, OVERLAY_WINDOW_KEY);
-
+        //
         // const windowPropertiesModels = await getWindowPropertiesList();
         // const displayWindowProperties = windowPropertiesModels.filter((it) => it.programName === settings.settingsScreenCapture.displayProgramName)[0];
         //
         // if (displayWindowProperties) {
         //     overlayWindow.attachTo(window, displayWindowProperties.programName);
         // }
-
+        //
         // sendWindowPropertiesArray(windowPropertiesModels, OVERLAY_WINDOW_KEY);
     });
 

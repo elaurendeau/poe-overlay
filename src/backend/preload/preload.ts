@@ -18,6 +18,7 @@ contextBridge.exposeInMainWorld("api", {
             "toggle-overlay-display-position-editor",
             "hide-overlay-position-editor",
             "request-stream-full-window",
+            "start-streaming",
         ];
         if (validChannels.includes(channel)) {
             logger.debug(`Preload.send -> ${channel} whitelisted`);
@@ -35,7 +36,15 @@ contextBridge.exposeInMainWorld("api", {
     },
     receive: (channel, callback) => {
         logger.debug(`Preload.receive -> ${channel}`);
-        const validChannels = ["update-grid-settings", "update-window-list", "update-settings", "resize-overlay-display-position-editor", "resize-overlay-capture-position-editor", "change-settings-overlay-position-editor"];
+        const validChannels = [
+            "update-grid-settings",
+            "update-window-list",
+            "update-settings",
+            "resize-overlay-display-position-editor",
+            "resize-overlay-capture-position-editor",
+            "change-settings-overlay-position-editor",
+            "update-profile",
+        ];
 
         if (validChannels.includes(channel)) {
             logger.debug(`Preload.receive -> ${channel} whitelisted `);

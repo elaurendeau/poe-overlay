@@ -8,23 +8,14 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { SettingsGridModel } from "@/backend/model/settings-grid-model";
-import { SettingsOverlayModel } from "@/backend/model/settings-overlay-model";
-import { SettingsOverlayPositionEditorModel } from "@/backend/model/settings-overlay-position-editor-model";
-import { SettingsScreenCaptureModel } from "@/backend/model/settings-screen-capture";
-import { SettingsModel } from "@/backend/model/settings-model";
 import { WindowPropertiesModel } from "@/backend/model/window-properties-model";
+import { ProfileModel } from "@/backend/model/profile-model";
 
 export default Vue.extend({
     name: "OverlayView",
     data() {
         return {
-            settings: {
-                settingsGrid: {} as SettingsGridModel,
-                settingsOverlay: {} as SettingsOverlayModel,
-                settingsOverlayPositionEditor: {} as SettingsOverlayPositionEditorModel,
-                settingsScreenCapture: {} as SettingsScreenCaptureModel,
-            } as SettingsModel,
+            profile: null as ProfileModel | null,
             windowPropertiesArray: [] as Array<WindowPropertiesModel>,
             currentWindowProperties: null as WindowPropertiesModel | null,
         };
@@ -32,10 +23,10 @@ export default Vue.extend({
 
     methods: {
         findMatchingWindowProperties() {
-            if (!this.currentWindowProperties && this.settings.settingsScreenCapture.captureProgramName) {
+            if (!this.currentWindowProperties && this.profile?.settingsScreenCapture.captureProgramName) {
                 const windowPropertiesFilteredArray = this.windowPropertiesArray.filter((currentWindowProperties) => {
                     return (
-                        currentWindowProperties.programName === this.settings.settingsScreenCapture.captureProgramName
+                        currentWindowProperties.programName === this.profile?.settingsScreenCapture.captureProgramName
                     );
                 });
 
@@ -58,15 +49,15 @@ export default Vue.extend({
                 throw new Error("unable to locate 'this.currentWindowProperties'");
             }
 
-            if (!this.settings.settingsOverlay.overlayArray) {
-                throw new Error("unable to locate 'this.settings.settingsOverlay.overlayArray'");
+            if (!this.profile?.settingsOverlay.overlayArray) {
+                throw new Error("unable to locate 'this.profile.settingsOverlay.overlayArray'");
             }
 
             console.log({ htmlCanvasElement });
             window.api.overlayStream(
                 "TODO",
                 this.currentWindowProperties,
-                this.settings.settingsOverlay.overlayArray,
+                this.profile.settingsOverlay.overlayArray,
                 htmlCanvasElement,
                 this.$el.querySelector("video.hidden"),
                 this.$el.querySelector("video.shown")
@@ -75,10 +66,10 @@ export default Vue.extend({
     },
 
     mounted() {
-        window.api.receive("update-settings", (event, data) => {
-            console.log(`Back.ipc -> update-settings '${JSON.stringify(data)}'`);
+        window.api.receive("update-profile", (event, data) => {
+            console.log(`Back.ipc -> update-profile '${JSON.stringify(data)}'`);
             if (data) {
-                this.settings = data;
+                this.profile = data;
                 this.handleStream();
             } else {
                 throw new Error("Data is undefined");

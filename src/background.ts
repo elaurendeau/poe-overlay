@@ -2,6 +2,7 @@ import { app, protocol, BrowserWindow, ipcMain } from "electron";
 import { createOverlayWindow } from "@/backend/electron-component/window/overlay-window";
 import { createTray } from "@/backend/electron-component/tray/main-tray";
 
+import "@/backend/ipc/overlay-ipc";
 import "@/backend/ipc/settings-ipc";
 import "@/backend/ipc/grid-ipc";
 import "@/backend/ipc/overlay-position-editor-ipc";
@@ -12,6 +13,7 @@ import { createCaptureOverlayPositionEditorWindow } from "@/backend/electron-com
 import { createDisplayOverlayPositionEditorWindow } from "@/backend/electron-component/window/overlay-display-position-editor-window";
 import { WindowPropertiesModel } from "@/backend/model/window-properties-model";
 import { OverlayModel } from "@/backend/model/overlay-model";
+import { createProfilePickerWindow } from "@/backend/electron-component/window/profile-picker-window";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -48,6 +50,8 @@ app.on("ready", async () => {
     createGridWindow();
     createTray();
     createSettingsWindow();
+    createProfilePickerWindow();
+    createOverlayWindow();
 });
 
 // Exit cleanly on request from parent process in development mode.

@@ -2,7 +2,7 @@ import { BrowserWindow, desktopCapturer, screen } from "electron";
 import path from "path";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import { electronComponents, OVERLAY_CAPTURE_POSITION_EDITOR_WINDOW_KEY } from "@/backend/electron-component/electron-components";
-import { updateOverlayCapturePositionCoordinates } from "@/backend/manager/overlay-position-editor-manager";
+import { resizeDisplay, updateOverlayCapturePositionCoordinates } from "@/backend/manager/overlay-position-editor-manager";
 import { updateOverlayPositionEditorSettings } from "@/backend/ipc/overlay-position-editor-ipc";
 import { getSettings } from "@/backend/manager/settings-manager";
 
@@ -37,6 +37,7 @@ export function createCaptureOverlayPositionEditorWindow(): BrowserWindow {
     });
     overlay.on("resized", () => {
         updateOverlayCapturePositionCoordinates();
+        resizeDisplay();
     });
 
     overlay.on("moved", () => {

@@ -46,6 +46,9 @@ export default Vue.extend({
     watch: {
         localProfileArray(newArray) {
             this.validateProfiles(newArray);
+            if (this.isProfileValid) {
+                this.$emit("update:profileArray", this.profileArray);
+            }
         },
     },
     methods: {
@@ -119,6 +122,7 @@ export default Vue.extend({
                 Set <strong>one</strong> profile to <strong>default</strong> prior to saving your settings.
             </v-alert>
             <v-data-table
+                id="profile-table"
                 :headers="profileHeaderArray"
                 :items="this.localProfileArray"
                 item-key="id"
@@ -127,6 +131,7 @@ export default Vue.extend({
                 @click:row="selectProfile"
                 :class="{ 'red-border': !isProfileValid }"
                 class="elevation-1 w-100"
+                selectable-key="id"
             >
                 <template v-slot:[`item.default`]="{ item }">
                     <span><v-icon v-if="item.isDefaultProfile">mdi-star-outline</v-icon></span>

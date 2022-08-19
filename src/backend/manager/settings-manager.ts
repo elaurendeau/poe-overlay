@@ -4,7 +4,6 @@ import electron from "electron";
 import path from "path";
 import * as fs from "fs";
 import { createDefaultGridSettings } from "@/backend/manager/grid-manager";
-import { createDefaultOverlaySettings } from "@/backend/manager/overlay-manager";
 import { updateGridWindowSettings } from "@/backend/ipc/grid-ipc";
 import { updateOverlayPositionEditorSettings } from "@/backend/ipc/overlay-position-editor-ipc";
 import { updateSettingsWindow } from "@/backend/ipc/settings-ipc";
@@ -12,6 +11,7 @@ import { OVERLAY_WINDOW_KEY, SETTINGS_WINDOW_KEY } from "@/backend/electron-comp
 import { createDefaultProfile, getCurrentProfile } from "@/backend/manager/profile-manager";
 import { ProfileModel } from "@/backend/model/profile-model";
 import { createDefaultSettingsOverlayPositionEditorSettings } from "@/backend/manager/overlay-position-editor-manager";
+import { updateOverlayProfile } from "@/backend/ipc/overlay-ipc";
 
 const userDataPath = (electron.app || electron.remote.app).getPath("userData");
 const SETTINGS_FILE_PATH = path.join(userDataPath, "settings.json");
@@ -65,4 +65,5 @@ export function updateAllSettings(settings: SettingsModel) {
     updateSettingsWindow(settings, OVERLAY_WINDOW_KEY);
     updateGridWindowSettings(settings.settingsGrid);
     updateOverlayPositionEditorSettings(settings.settingsOverlayPositionEditor);
+    updateOverlayProfile(settings);
 }

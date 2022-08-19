@@ -67,7 +67,6 @@ export default Vue.extend({
                     this.currentWindowPropertiesIsValid = false;
                     this.currentWindowProperties = filteredWindowArray[0];
                     this.updateVideoStream();
-                    console.log("Updating;;" + this.currentWindowPropertiesIsValid);
                     return;
                 }
             }
